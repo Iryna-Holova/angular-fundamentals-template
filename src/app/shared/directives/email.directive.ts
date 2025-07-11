@@ -1,10 +1,14 @@
-import { Directive } from "@angular/core";
-import { Validator } from "@angular/forms";
+import { Directive } from '@angular/core';
+import { Validator } from '@angular/forms';
 
 @Directive({
-    selector: '[emailValidator]',
-    providers: [/*Add your code here*/]
+  selector: '[emailValidator]',
+  providers: [
+    /*Add your code here*/
+  ],
 })
 export class EmailValidatorDirective implements Validator {
-    // Add your code here
+  validate(): null {
+    return null;
+  }
 }

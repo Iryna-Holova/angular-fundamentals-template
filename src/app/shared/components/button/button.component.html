@@ -1,4 +1,14 @@
-<div class="app-button">
-  <!-- Replace the text below with your code -->
-  Button
-</div>
+<button
+  [type]="type"
+  class="bg-accent text-white w-full h-[50px] flex items-center justify-center gap-2 rounded hover:bg-active focus:bg-active active:shadow-inside transition"
+  [ngStyle]="{ width: !buttonText ? '50px' : width ? width + 'px' : '100%' }"
+>
+  <fa-icon
+    *ngIf="iconName"
+    [icon]="['far', iconName]"
+    class="text-[25px]"
+  ></fa-icon>
+  <span *ngIf="buttonText" class="text-base font-bold uppercase">{{
+    buttonText
+  }}</span>
+</button>

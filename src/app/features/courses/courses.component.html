@@ -1,0 +1,16 @@
+<section class="py-[71px]">
+  <div class="mb-8 flex justify-end">
+    <app-button
+      [buttonText]="BUTTON_TEXT.ADD_COURSE"
+      [width]="183"
+    ></app-button>
+  </div>
+
+  <app-courses-list
+    [courses]="courses"
+    [editable]="true"
+    (showCourse)="onShowCourse($event)"
+    (editCourse)="onEditCourse($event)"
+    (deleteCourse)="onDeleteCourse($event)"
+  ></app-courses-list>
+</section>

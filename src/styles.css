@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-display: swap;
+  src: local('Open Sans'),
+    url(assets/fonts/OpenSans-Regular.woff2) format('woff2'),
+    url(assets/fonts/OpenSans-Regular.woff) format('woff'),
+    url(assets/fonts/OpenSans-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: normal;
+  font-display: swap;
+  src: local('Open Sans'), url(assets/fonts/OpenSans-Bold.woff2) format('woff2'),
+    url(assets/fonts/OpenSans-Bold.woff) format('woff'),
+    url(assets/fonts/OpenSans-Bold.ttf) format('truetype');
+}
+
+@layer base {
+  body {
+    height: 100vh;
+    font-family: theme('fontFamily.open-sans');
+    line-height: 20px;
+    color: theme('colors.grey');
+    background-color: theme('colors.light');
+  }
+}

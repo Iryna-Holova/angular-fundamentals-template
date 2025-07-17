@@ -33,12 +33,10 @@ export class CourseFormComponent {
       description: ['', [Validators.required, Validators.minLength(2)]],
       duration: ['', [Validators.required, Validators.min(0)]],
       authors: this.fb.array([], Validators.required),
-      newAuthor: this.fb.group({
-        authorName: [
-          '',
-          [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9\s]+$/)],
-        ],
-      }),
+      author: [
+        '',
+        [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9\s]+$/)],
+      ],
     });
   }
 
@@ -76,15 +74,14 @@ export class CourseFormComponent {
   }
 
   addNewAuthor(): void {
-    const newAuthorGroup = this.courseForm.get('newAuthor') as FormGroup;
-    const nameControl = newAuthorGroup.get('authorName');
+    const authorControl = this.courseForm.get('author');
 
-    if (!nameControl || nameControl.invalid) {
-      nameControl?.markAsTouched();
+    if (!authorControl || authorControl.invalid) {
+      authorControl?.markAsTouched();
       return;
     }
 
-    const authorName = nameControl.value?.trim();
+    const authorName = authorControl.value?.trim();
     if (!authorName) return;
 
     const newAuthor: Author = {
@@ -94,7 +91,7 @@ export class CourseFormComponent {
 
     this.allAuthors.push(newAuthor);
     this.addExistingAuthor(newAuthor);
-    nameControl.reset();
+    authorControl.reset();
   }
 
   onSubmit(): void {
@@ -106,7 +103,7 @@ export class CourseFormComponent {
       return;
     }
 
-    const { newAuthor, authors, ...formData } = this.courseForm.value;
+    const { author, authors, ...formData } = this.courseForm.value;
 
     console.log('Form submitted:', {
       ...formData,

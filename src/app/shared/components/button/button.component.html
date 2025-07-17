@@ -1,12 +1,20 @@
 <button
   [type]="type"
-  class="bg-accent text-white w-full h-[50px] flex items-center justify-center gap-2 rounded hover:bg-active focus:bg-active active:shadow-inside transition"
+  [ngClass]="{
+    'flex items-center justify-center gap-2': true,
+    'h-8': size === 'sm',
+    'h-[50px]': size === 'md',
+    'bg-accent rounded text-white hover:bg-active focus:bg-active active:shadow-inside transition':
+      !transparent,
+    'text-grey hover:scale-110 focus:scale-110 transition-transform will-change-transform':
+      transparent
+  }"
   [ngStyle]="{ width: !buttonText ? '50px' : width ? width + 'px' : '100%' }"
 >
   <fa-icon
     *ngIf="iconName"
-    [icon]="['far', iconName]"
-    class="text-[25px]"
+    [icon]="iconName"
+    [ngClass]="{ 'text-[25px]': size === 'md' }"
   ></fa-icon>
   <span *ngIf="buttonText" class="text-base font-bold uppercase">{{
     buttonText

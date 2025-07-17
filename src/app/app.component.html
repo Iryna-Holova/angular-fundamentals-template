@@ -24,13 +24,17 @@
   <app-course-info [course]="courses[0]"></app-course-info>
 
   <!-- Login Form component -->
-  <!--<app-login-form></app-login-form>-->
+  <app-info [title]="'Login'">
+    <app-login-form></app-login-form>
+  </app-info>
 
-  <!-- Login Form component -->
-  <!--<app-registration-form></app-registration-form>-->
+  <!-- Registration Form component -->
+  <app-info [title]="'Registration'"
+    ><app-registration-form></app-registration-form
+  ></app-info>
 
-  <!-- Login Form component -->
-  <!--<app-course-form></app-course-form>-->
+  <!-- Course Form component -->
+  <app-course-form></app-course-form>
 
   <!-- Modal component -->
   <!-- <app-modal [message]="'Message'" [title]="'Title'" [okButtonText]="'Ok'" [cancelButtonText]="'Cancel'"></app-modal> -->

@@ -17,7 +17,7 @@ import { mockedAuthorsList as AUTHORS } from '@shared/mocks/mock';
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
 })
-export class CourseFormComponent implements OnInit {
+export class CourseFormComponent {
   courseForm!: FormGroup;
   allAuthors: Author[] = [...AUTHORS];
   submitted = false;

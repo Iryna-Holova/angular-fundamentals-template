@@ -27,9 +27,7 @@ export class CourseFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder, public library: FaIconLibrary) {
     library.addIconPacks(fas);
-  }
 
-  ngOnInit(): void {
     this.courseForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.minLength(2)]],
@@ -107,8 +105,14 @@ export class CourseFormComponent implements OnInit {
       return;
     }
 
-    const { newAuthor, ...formData } = this.courseForm.value;
-    console.log('Form submitted:', formData);
+    const { newAuthor, authors, ...formData } = this.courseForm.value;
+
+    console.log('Form submitted:', {
+      ...formData,
+      authors: authors.map((author: Author) => author.id),
+    });
+
+    this.authors.clear();
     this.courseForm.reset();
     this.submitted = false;
   }

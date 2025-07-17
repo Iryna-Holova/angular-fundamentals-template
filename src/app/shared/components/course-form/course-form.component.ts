@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -93,6 +93,7 @@ export class CourseFormComponent {
     };
 
     this.allAuthors.push(newAuthor);
+    this.addExistingAuthor(newAuthor);
     nameControl.reset();
   }
 

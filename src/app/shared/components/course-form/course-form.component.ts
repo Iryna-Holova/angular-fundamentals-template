@@ -32,7 +32,7 @@ export class CourseFormComponent {
       title: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.minLength(2)]],
       duration: ['', [Validators.required, Validators.min(0)]],
-      authors: this.fb.array([], Validators.required),
+      courseAuthors: this.fb.array([], Validators.required),
       newAuthor: this.fb.group({
         name: [
           '',
@@ -47,7 +47,7 @@ export class CourseFormComponent {
   }
 
   get authors(): FormArray {
-    return this.courseForm.get('authors') as FormArray;
+    return this.courseForm.get('courseAuthors') as FormArray;
   }
 
   get selectedAuthors(): Author[] {

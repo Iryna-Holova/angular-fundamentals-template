@@ -32,9 +32,9 @@ export class CourseFormComponent {
       title: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.minLength(2)]],
       duration: ['', [Validators.required, Validators.min(0)]],
-      courseAuthors: this.fb.array([], Validators.required),
+      authors: this.fb.array([], Validators.required),
       newAuthor: this.fb.group({
-        name: [
+        authorName: [
           '',
           [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9\s]+$/)],
         ],
@@ -47,7 +47,7 @@ export class CourseFormComponent {
   }
 
   get authors(): FormArray {
-    return this.courseForm.get('courseAuthors') as FormArray;
+    return this.courseForm.get('authors') as FormArray;
   }
 
   get selectedAuthors(): Author[] {
@@ -77,7 +77,7 @@ export class CourseFormComponent {
 
   addNewAuthor(): void {
     const newAuthorGroup = this.courseForm.get('newAuthor') as FormGroup;
-    const nameControl = newAuthorGroup.get('name');
+    const nameControl = newAuthorGroup.get('authorName');
 
     if (!nameControl || nameControl.invalid) {
       nameControl?.markAsTouched();

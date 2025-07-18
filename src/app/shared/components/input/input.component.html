@@ -1,0 +1,55 @@
+<div class="group flex flex-col relative w-full">
+  <label *ngIf="label" [for]="id" class="font-bold text-start">{{
+    label
+  }}</label>
+
+  <ng-container [ngSwitch]="controlType">
+    <input
+      *ngSwitchCase="'input'"
+      [id]="id"
+      [name]="fieldName"
+      [type]="type !== 'password' ? type : isTextVisible ? 'text' : 'password'"
+      [placeholder]="placeholder"
+      [ngClass]="{
+        'border border-border bg-white rounded px-4 py-3 leading-6 group-hover:border-grey transition-colors': true,
+        'border-error': hasError,
+        'pr-[50px]': type === 'password'
+      }"
+      [value]="value"
+      (input)="handleInput($event)"
+      (blur)="onTouched()"
+    />
+
+    <textarea
+      *ngSwitchCase="'textarea'"
+      [id]="id"
+      [name]="fieldName"
+      [placeholder]="placeholder"
+      [ngClass]="{
+        'border border-border bg-white rounded px-4 py-3 leading-6 group-hover:border-grey transition-colors resize-none': true,
+        'border-error': hasError
+      }"
+      [value]="value"
+      (input)="handleInput($event)"
+      (blur)="onTouched()"
+      rows="5"
+    ></textarea>
+  </ng-container>
+
+  <span
+    *ngIf="hasError"
+    id="{{ fieldName + 'ErrorMessage' }}"
+    class="text-error absolute top-full"
+  >
+    {{ errorMessage }}
+  </span>
+
+  <span *ngIf="type === 'password'" class="absolute right-0 bottom-0">
+    <app-button
+      [iconName]="isTextVisible ? 'eye' : 'eye-slash'"
+      [transparent]="true"
+      [light]="true"
+      (click)="toggleTextVisibility()"
+    ></app-button
+  ></span>
+</div>

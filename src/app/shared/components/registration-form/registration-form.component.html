@@ -1,28 +1,64 @@
-<h2 class="text-align-center">Registration</h2>
-<div class="app-plate">
-  <div class="registration-form">
-    <div>
-      <div class="form__control">
-        <label for="name">Name</label>
-        <!--Use the name `name` for the form control.-->
-        <input type="text" id="name" placeholder="Input text"/>
-        <span id="nameErrorMessage" class="text-danger">Name is required.</span>
-      </div>
-      <div class="form__control">
-        <!--Use the name `email` for the form control.-->
-        <label for="email">Email</label>
-        <input type="text" id="email" placeholder="Input text"/>
-        <span id="emailErrorMessage" class="text-danger">Email is required.</span>
-      </div>
-      <div class="form__control">
-        <!--Use the name `password` for the form control.-->
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Input text"/>
-        <span id="passwordErrorMessage" class="text-danger">Password is required.</span>
-      </div>
-    </div>
-    <div class="form__action">
-      <app-button></app-button>
-    </div>
-  </div>
+<div
+  class="bg-white px-5 py-[50px] tablet:px-20 laptop:px-[150px] laptop:pt-[77px] laptop:pb-[61px] max-w-full border border-border rounded-md"
+>
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-y-[34px] laptop:w-[286px] mb-[38px]"
+    novalidate
+  >
+    <!-- Name -->
+    <app-input
+      [formControlName]="FIELDS.NAME"
+      formName="registrationForm"
+      [fieldName]="FIELDS.NAME"
+      type="text"
+      [label]="FIELD_NAMES.NAME"
+      placeholder="Input text"
+      [hasError]="!!(nameCtrl?.invalid && (nameCtrl?.touched || submitted))"
+      [errorMessage]="nameCtrl?.errors?.['required'] ? 'Name is required.' : 'Name must be at least 6 characters.'"
+      required
+    ></app-input>
+
+    <!-- Email -->
+    <app-input
+      [formControlName]="FIELDS.EMAIL"
+      formName="registrationForm"
+      [fieldName]="FIELDS.EMAIL"
+      type="email"
+      [label]="FIELD_NAMES.EMAIL"
+      placeholder="Input text"
+      [hasError]="!!(emailCtrl?.invalid && (emailCtrl?.touched || submitted))"
+      [errorMessage]="emailCtrl?.errors?.['required'] ? 'Email is required.' : 'Invalid email format.'"
+      required
+    ></app-input>
+
+    <!-- Password -->
+    <app-input
+      [formControlName]="FIELDS.PASSWORD"
+      formName="registrationForm"
+      [fieldName]="FIELDS.PASSWORD"
+      type="password"
+      [label]="FIELD_NAMES.PASSWORD"
+      placeholder="Input text"
+      [hasError]="
+        !!(passwordCtrl?.invalid && (passwordCtrl?.touched || submitted))
+      "
+      [errorMessage]="'Password is required.'"
+      required
+    ></app-input>
+
+    <!-- Submit Button -->
+    <app-button [buttonText]="BUTTON_TEXT.REGISTER" type="submit"></app-button>
+  </form>
+
+  <p class="w-[286px] max-w-full">
+    {{ PAGE_TEXT.REGISTRATION.TEXT }}
+    <a
+      href="#"
+      class="font-bold underline decoration-transparent hover:decoration-grey transition-colors cursor-pointer"
+    >
+      {{ BUTTON_TEXT.LOGIN }}
+    </a>
+  </p>
 </div>

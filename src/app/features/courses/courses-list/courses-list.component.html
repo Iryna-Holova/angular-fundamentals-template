@@ -5,10 +5,7 @@
     [editable]="editable"
     (clickOnShow)="onShow(course.id)"
   >
-    <app-button
-      iconName="pen-to-square"
-      (click)="onEdit(course.id)"
-    ></app-button>
     <app-button iconName="trash-can" (click)="onDelete(course.id)"></app-button>
+    <app-button iconName="pencil" (click)="onEdit(course.id)"></app-button>
   </app-course-card>
 </ul>

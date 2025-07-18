@@ -1,56 +1,175 @@
-<!-- Replace ::text:: with your code -->
-<h2>Create / Edit Course</h2>
-<form>
-  <div class="app-plate">
-    <div class="course">
-      <h3>Main Info</h3>
-      <div class="form__control">
-        <label for="title">Title</label>
-        <!--Use the name `title` for the form control.-->
-        <input type="text" id="title" placeholder="Input text"/>
-        <span id="titleErrorMessage" class="text-danger">Title is required.</span>
-      </div>
-      <div class="form__control">
-        <label for="description">Description</label>
-        <!--Use the name `description` for the form control.-->
-        <textarea
-          id="description"
-          name="description"
+<section class="py-[71px]">
+  <h2 class="text-[32px]/10 font-bold mb-[45px]">Course Edit/Create Page</h2>
+  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <div
+      class="app-plate bg-white mb-8 flex flex-wrap gap-8 justify-between items-start border border-border rounded-md px-20 py-25 laptop:pt-[42px] laptop:px-20 laptop:pb-[76px]"
+    >
+      <!-- Main Info -->
+      <div class="course flex flex-col gap-y-6 w-full">
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.MAIN_INFO }}</h3>
+
+        <!-- Title -->
+        <app-input
+          [formControlName]="FIELDS.TITLE"
+          formName="courseForm"
+          [fieldName]="FIELDS.TITLE"
+          type="text"
+          [label]="FIELD_NAMES.TITLE"
           placeholder="Input text"
-          rows="4"
-          cols="5"
-        ></textarea>
-        <span id="descriptionErrorMessage" class="text-danger">Description is required.</span>
+          [hasError]="
+            !!(titleCtrl?.invalid && (titleCtrl?.touched || submitted))
+          "
+          [errorMessage]="titleCtrl?.errors?.['required'] ? 'Title is required.' : 'Title must be at least 2 characters.'"
+          required
+        ></app-input>
+
+        <!-- Description -->
+        <app-input
+          [formControlName]="FIELDS.DESCRIPTION"
+          formName="courseForm"
+          [fieldName]="FIELDS.DESCRIPTION"
+          type="text"
+          [label]="FIELD_NAMES.DESCRIPTION"
+          placeholder="Input text"
+          [hasError]="
+            !!(
+              descriptionCtrl?.invalid &&
+              (descriptionCtrl?.touched || submitted)
+            )
+          "
+          [errorMessage]="descriptionCtrl?.errors?.['required'] ? 'Description is required.' : 'Description must be at least 2 characters.'"
+          controlType="textarea"
+          required
+        ></app-input>
       </div>
-      <div class="separator"></div>
-      <h3>Authors</h3>
-      <div class="form__control">
-        <div class="course__flex">
-          <!--Use the name `author` for the form control.-->
-          <input type="text" id="author" placeholder="Input Author Name"/>
-          <app-button id="createAuthor"></app-button>
-        </div>
-        <span id="authorErrorMessage">New author should contain only latin letters and numbers.</span>
-        <div class="course__authors">
-          <!--Use the name `authors` for the form array.-->
-          ::Authors::
-        </div>
-      </div>
-      <div class="separator"></div>
-      <h3>Duration</h3>
-      <div class="form__control">
-        <div class="course__flex">
-          <!--Use the name `duration` for the form array.-->
-          <input type="number" id="duration" placeholder="Input duration"/>
-          <div class="course__duration">
-            ::Duration::
+
+      <!-- Duration -->
+      <div class="flex flex-col gap-y-6 w-[601px] max-w-full">
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.DURATION }}</h3>
+        <div class="flex flex-col tablet:flex-row gap-4 items-end">
+          <div class="w-full">
+            <app-input
+              [formControlName]="FIELDS.DURATION"
+              formName="courseForm"
+              [fieldName]="FIELDS.DURATION"
+              type="number"
+              [label]="FIELD_NAMES.DURATION"
+              placeholder="Input number"
+              [hasError]="
+                !!(
+                  durationCtrl?.invalid &&
+                  (durationCtrl?.touched || submitted)
+                )
+              "
+              [errorMessage]="'Duration is required.'"
+              required
+            ></app-input>
+          </div>
+          <div
+            class="tablet:flex tablet:w-[185px] tablet:flex-none tablet:h-[50px] tablet:items-center gap-x-1.5"
+          >
+            <b>{{ durationValue | duration }}</b>
           </div>
         </div>
-        <span id="durationErrorMessage" class="text-danger">Duration is required.</span>
       </div>
-      <div class="form__action">
-        <app-button></app-button>
+
+      <!-- Authors -->
+      <div class="flex flex-col gap-y-8 w-[601px] max-w-full">
+        <!-- Create Author -->
+        <div class="flex flex-col gap-y-6">
+          <h3 class="text-2xl font-bold">{{ FIELD_NAMES.AUTHORS }}</h3>
+          <div class="flex flex-col tablet:flex-row gap-4 items-end">
+            <div class="w-full">
+              <app-input
+                [formControlName]="FIELDS.NEW_AUTHOR"
+                formName="courseForm"
+                [fieldName]="FIELDS.NEW_AUTHOR"
+                type="text"
+                [label]="FIELD_NAMES.AUTHOR_NAME"
+                placeholder="Input text"
+                [hasError]="
+                  !!(authorCtrl?.invalid && (authorCtrl?.touched || submitted))
+                "
+                [errorMessage]="
+                  'Only Latin letters and numbers, min 2 characters.'
+                "
+              ></app-input>
+            </div>
+
+            <app-button
+              id="createAuthor"
+              (click)="addNewAuthor()"
+              [buttonText]="BUTTON_TEXT.CREATE_AUTHOR"
+              [width]="185"
+              type="button"
+            ></app-button>
+          </div>
+        </div>
+
+        <!-- Available Authors List -->
+        <div class="flex flex-col gap-y-6">
+          <h3 class="text-xl font-bold">{{ FIELD_NAMES.AUTHORS_LIST }}</h3>
+          <ul *ngIf="availableAuthors.length; else noAvailableAuthors">
+            <li
+              *ngFor="let author of availableAuthors"
+              class="flex items-center gap-x-2.5"
+            >
+              <span>{{ author.name }}</span>
+              <app-button
+                iconName="plus"
+                (click)="addExistingAuthor(author)"
+                [transparent]="true"
+                size="sm"
+              ></app-button>
+            </li>
+          </ul>
+          <ng-template #noAvailableAuthors>
+            <p>No available authors</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Selected Authors -->
+      <div class="flex flex-col gap-y-6 relative">
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.COURSE_AUTHORS }}</h3>
+        <ul *ngIf="selectedAuthors.length; else empty">
+          <li
+            *ngFor="let author of selectedAuthors"
+            class="flex items-center gap-x-2.5"
+          >
+            <span>{{ author.name }}</span>
+            <app-button
+              [iconName]="'trash-can'"
+              (click)="removeAuthor(author.id)"
+              [transparent]="true"
+              size="sm"
+            ></app-button>
+          </li>
+        </ul>
+        <ng-template #empty>
+          <p class="desktop:text-center">Author list is empty</p>
+        </ng-template>
+        <span
+          *ngIf="authors.invalid && submitted"
+          class="font-normal text-error w-full desktop:text-center absolute top-full"
+        >
+          Authors are required
+        </span>
       </div>
     </div>
-  </div>
-</form>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-end items-end gap-5">
+      <app-button
+        [buttonText]="BUTTON_TEXT.BACK"
+        [width]="185"
+        type="button"
+      ></app-button>
+      <app-button
+        [buttonText]="BUTTON_TEXT.ADD_COURSE"
+        type="submit"
+        [width]="185"
+      ></app-button>
+    </div>
+  </form>
+</section>

@@ -3,9 +3,6 @@
   <app-button [buttonText]="BUTTON_TEXT.LOGOUT" [width]="140"></app-button>
 </app-header>
 <div class="container">
-  <!-- Search component -->
-  <!--<app-search></app-search>-->
-
   <!-- Info component -->
   <app-info
     [title]="PAGE_TEXT.NO_COURSES.TITLE"
@@ -24,13 +21,17 @@
   <app-course-info [course]="courses[0]"></app-course-info>
 
   <!-- Login Form component -->
-  <!--<app-login-form></app-login-form>-->
+  <app-info [title]="PAGE_TEXT.LOGIN.TITLE">
+    <app-login-form></app-login-form>
+  </app-info>
 
-  <!-- Login Form component -->
-  <!--<app-registration-form></app-registration-form>-->
+  <!-- Registration Form component -->
+  <app-info [title]="PAGE_TEXT.REGISTRATION.TITLE"
+    ><app-registration-form></app-registration-form
+  ></app-info>
 
-  <!-- Login Form component -->
-  <!--<app-course-form></app-course-form>-->
+  <!-- Course Form component -->
+  <app-course-form></app-course-form>
 
   <!-- Modal component -->
   <!-- <app-modal [message]="'Message'" [title]="'Title'" [okButtonText]="'Ok'" [cancelButtonText]="'Cancel'"></app-modal> -->

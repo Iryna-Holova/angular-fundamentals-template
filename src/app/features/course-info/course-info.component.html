@@ -1,17 +1,53 @@
-<!-- Replace ::text:: with your code -->
+<section class="py-[71px]">
+  <h2 class="text-[32px]/10 font-bold mb-6">{{ course.title }}</h2>
 
-<div class="title">::Title::</div>
-<div class="course-info">
-  <div class="course-info__description">
-    ::Description::
+  <div
+    class="bg-white mb-[46px] flex flex-col gap-y-[46px] border border-border rounded-md px-5 py-[25px] laptop:pt-[53px] laptop:px-16 laptop:pb-[77px] desktop:flex-row desktop:gap-x-[65px]"
+  >
+    <div>
+      <h3 class="text-xl/5 font-bold mb-[25px]">
+        {{ FIELD_NAMES.DESCRIPTION }}:
+      </h3>
+      <p class="desktop:w-[487px]">{{ course.description }}</p>
+    </div>
+
+    <ul
+      class="flex flex-col gap-y-4 relative before:absolute before:w-full before:h-px before:-top-4 before:block before:bg-border desktop:before:w-px desktop:before:min-h-[203px] desktop:before:h-full desktop:before:-left-8 desktop:before:-top-[27px] desktop:mt-[47px]"
+    >
+      <li class="flex flex-col tablet:flex-row tablet:items-center">
+        <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
+          {{ FIELD_NAMES.ID }}:
+        </h3>
+        <span>{{ course.id }}</span>
+      </li>
+
+      <li class="flex flex-col tablet:flex-row tablet:items-center">
+        <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
+          {{ FIELD_NAMES.DURATION }}:
+        </h3>
+        <span
+          ><b>{{ durationTime }}</b> {{ durationSuffix }}</span
+        >
+      </li>
+
+      <li class="flex flex-col tablet:flex-row tablet:items-center">
+        <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
+          {{ FIELD_NAMES.CREATED }}:
+        </h3>
+        <time [attr.datetime]="course.creationDate | customDate : 'time'">
+          {{ course.creationDate | customDate }}
+        </time>
+      </li>
+
+      <li class="flex flex-col tablet:flex-row tablet:items-center">
+        <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
+          {{ FIELD_NAMES.AUTHORS }}:
+        </h3>
+        <span>{{ course.authors | authorNames }}</span>
+      </li>
+    </ul>
   </div>
-  <div class="course-info__info">
-    <div><b>ID: </b><span class="course-info__info-id">::id::</span></div>
-    <div><b>Duration: </b><span class="course-info__info-duration">::duration::</span></div>
-    <div><b>Created: </b><span class="course-info__info-date">::date::</span></div>
-    <div><b>Authors: </b><span class="course-info__info-authors">::authors::</span></div>
+  <div class="flex justify-end">
+    <app-button [buttonText]="BUTTON_TEXT.BACK" [width]="185"></app-button>
   </div>
-</div>
-<div class="navigation-block">
-  <!--Enter your code here-->
-</div>
+</section>

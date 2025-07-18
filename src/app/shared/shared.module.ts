@@ -10,9 +10,10 @@ import {
   CourseCardComponent,
   LoginFormComponent,
   RegistrationFormComponent,
-  CourseFormComponent
-} from "./components";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+  CourseFormComponent,
+} from './components';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthorNamesPipe } from './pipes/author-names.pipe';
 import { DurationPipe } from './pipes/duration.pipe';
 import { CustomDatePipe } from './pipes/custom-date.pipe';
 import { EmailValidatorDirective } from '@shared/directives/email.directive';
@@ -27,19 +28,15 @@ const components = [
   LoginFormComponent,
   RegistrationFormComponent,
   CourseFormComponent,
+  AuthorNamesPipe,
   DurationPipe,
   CustomDatePipe,
-  EmailValidatorDirective
+  EmailValidatorDirective,
 ];
 
 @NgModule({
   declarations: [components],
-  imports: [
-    CommonModule,
-    FontAwesomeModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
-  exports: [components]
+  imports: [CommonModule, FontAwesomeModule, FormsModule, ReactiveFormsModule],
+  exports: [components],
 })
-export class SharedModule { }
+export class SharedModule {}

@@ -1,23 +1,39 @@
-<div class="course-card">
-    <div class="course-card__description">
-      <!-- Replace ::text:: with your code -->
-      <div class="course-card__description-title">::Title::</div>
-      <div class="course-card__description-text">::Description::</div>
+<li
+  class="p-5 laptop:pt-[21px] laptop:pr-11 laptop:pb-[35px] laptop:pl-[31px] bg-white shadow-l rounded-2xl border border-border border-l-[7px] border-l-grey"
+>
+  <h3 class="text-xl/8 font-bold mb-2.5">{{ course.title }}</h3>
+  <div
+    class="flex flex-col gap-y-5 laptop:flex-row laptop:gap-x-[30px] desktop:gap-x-[47px]"
+  >
+    <p class="line-clamp-7">{{ course.description }}</p>
+    <div
+      class="flex-none w-full laptop:w-[310px] flex flex-col items-end laptop:items-start"
+    >
+      <div class="mb-[31px] w-full">
+        <p class="line-clamp-1">
+          <b>{{ FIELD_NAMES.AUTHORS }}:</b> {{ course.authors | authorNames }}
+        </p>
+        <p>
+          <b>{{ FIELD_NAMES.DURATION }}:</b>
+          {{ (course.duration | duration).join(' ') }}
+        </p>
+        <p>
+          <b>{{ FIELD_NAMES.CREATED }}:</b>
+          <time [attr.datetime]="course.creationDate | customDate : 'time'">
+            {{ course.creationDate | customDate }}
+          </time>
+        </p>
+      </div>
+      <div class="flex gap-2.5">
+        <app-button
+          [buttonText]="BUTTON_TEXT.SHOW_COURSE"
+          [width]="180"
+          (click)="onShow()"
+        ></app-button>
+        <ng-container *ngIf="editable">
+          <ng-content></ng-content>
+        </ng-container>
+      </div>
     </div>
-    <div class="course-card__info">
-        <div class="course-card__info-text">
-            <div>
-              <b>Authors: </b>
-              ::Authors::
-            </div>
-            <div><b>Duration: </b><span class="course-card__duration">::Duration::</span></div>
-            <div><b>Created: </b><span class="course-card__date">::Creation Date::</span></div>
-        </div>
-        <div class="course-card__info-actions">
-            <app-button></app-button>
-            <div class="course-card__buttons">
-                <!--Enter your code here-->
-            </div>
-        </div>
-    </div>
-</div>
+  </div>
+</li>

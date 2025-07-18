@@ -23,7 +23,8 @@
         }"
         required
         emailValidator
-        [(ngModel)]="email"
+        ngModel
+        name="email"
         #emailCtrl="ngModel"
       />
       <span
@@ -53,7 +54,8 @@
             (passwordCtrl.invalid && loginForm.submitted)
         }"
         required
-        [(ngModel)]="password"
+        ngModel
+        name="password"
         #passwordCtrl="ngModel"
       />
       <span

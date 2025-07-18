@@ -8,74 +8,49 @@
     novalidate
   >
     <!-- Email -->
-    <div class="flex flex-col text-start font-bold relative w-full">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="Input text"
-        [ngClass]="{
-          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
-          'border-error':
-            (emailCtrl.invalid && emailCtrl.touched) ||
-            (emailCtrl.invalid && loginForm.submitted)
-        }"
-        required
-        emailValidator
-        ngModel
-        name="email"
-        #emailCtrl="ngModel"
-      />
-      <span
-        id="emailErrorMessage"
-        class="font-normal text-error absolute top-full"
-        *ngIf="
-          (emailCtrl.invalid && emailCtrl.touched) ||
-          (emailCtrl.invalid && loginForm.submitted)
-        "
-      >
-        {{ emailCtrl.errors?.['required'] ? 'Email is required.' : 'Invalid email format.' }}
-      </span>
-    </div>
+    <app-input
+      ngModel
+      [name]="FIELDS.EMAIL"
+      #emailCtrl="ngModel"
+      formName="loginForm"
+      [fieldName]="FIELDS.EMAIL"
+      type="email"
+      [label]="FIELD_NAMES.EMAIL"
+      placeholder="Input text"
+      [hasError]="
+        !!(emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted))
+      "
+      [errorMessage]="emailCtrl.errors?.['required'] ? 'Email is required.' : 'Invalid email format.'"
+      required
+      emailValidator
+    ></app-input>
 
     <!-- Password -->
-    <div class="flex flex-col text-start font-bold relative w-full">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        placeholder="Input text"
-        [ngClass]="{
-          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
-          'border-error':
-            (passwordCtrl.invalid && passwordCtrl.touched) ||
-            (passwordCtrl.invalid && loginForm.submitted)
-        }"
-        required
-        ngModel
-        name="password"
-        #passwordCtrl="ngModel"
-      />
-      <span
-        id="passwordErrorMessage"
-        class="font-normal text-error absolute top-full"
-        *ngIf="
-          (passwordCtrl.invalid && passwordCtrl.touched) ||
-          (passwordCtrl.invalid && loginForm.submitted)
-        "
-      >
-        Password is required.
-      </span>
-    </div>
+    <app-input
+      ngModel
+      [name]="FIELDS.PASSWORD"
+      #passwordCtrl="ngModel"
+      formName="loginForm"
+      [fieldName]="FIELDS.PASSWORD"
+      type="password"
+      [label]="FIELD_NAMES.PASSWORD"
+      placeholder="Input text"
+      [hasError]="
+        !!(
+          passwordCtrl.invalid &&
+          (passwordCtrl.touched || loginForm.submitted)
+        )
+      "
+      [errorMessage]="'Password is required.'"
+      required
+    ></app-input>
 
     <!-- Submit Button -->
     <app-button [buttonText]="BUTTON_TEXT.LOGIN" type="submit"></app-button>
   </form>
 
   <p class="w-[286px] max-w-full">
-    If you don't have an account you may
+    {{ PAGE_TEXT.LOGIN.TEXT }}
     <a
       href=""
       class="font-bold underline decoration-transparent hover:decoration-grey transition-colors cursor-pointer"

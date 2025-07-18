@@ -6,8 +6,9 @@
     'h-[50px]': size === 'md',
     'bg-accent rounded text-white hover:bg-active focus:bg-active active:shadow-inside transition':
       !transparent,
-    'text-grey hover:scale-110 focus:scale-110 transition-transform will-change-transform':
-      transparent
+    'text-grey hover:scale-110 active:scale-100 transition-transform will-change-transform':
+      transparent,
+    'text-placeholder': light
   }"
   [ngStyle]="{ width: !buttonText ? '50px' : width ? width + 'px' : '100%' }"
 >

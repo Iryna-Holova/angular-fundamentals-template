@@ -2,95 +2,68 @@
   <h2 class="text-[32px]/10 font-bold mb-[45px]">Course Edit/Create Page</h2>
   <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
     <div
-      class="app-plate bg-white mb-8 flex flex-wrap gap-8 justify-between items-start border border-border rounded-md px-20 py-25 laptop:pt-[42px] laptop:px-[80px] laptop:pb-[76px]"
+      class="app-plate bg-white mb-8 flex flex-wrap gap-8 justify-between items-start border border-border rounded-md px-20 py-25 laptop:pt-[42px] laptop:px-20 laptop:pb-[76px]"
     >
       <!-- Main Info -->
       <div class="course flex flex-col gap-y-6 w-full">
-        <h3 class="text-2xl font-bold">Main Info</h3>
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.MAIN_INFO }}</h3>
 
         <!-- Title -->
-        <div class="flex flex-col text-start font-bold relative w-full">
-          <label for="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            formControlName="title"
-            placeholder="Input text"
-            [ngClass]="{
-              'border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors border-border': true,
-              'border-error':
-                courseForm.get('title')?.invalid &&
-                (courseForm.get('title')?.touched || submitted)
-            }"
-          />
-          <span
-            class="font-normal text-error absolute top-full"
-            *ngIf="
-              courseForm.get('title')?.invalid &&
-              (courseForm.get('title')?.touched || submitted)
-            "
-            id="titleErrorMessage"
-          >
-            Title is required (min 2 characters).
-          </span>
-        </div>
+        <app-input
+          [formControlName]="FIELDS.TITLE"
+          formName="courseForm"
+          [fieldName]="FIELDS.TITLE"
+          type="text"
+          [label]="FIELD_NAMES.TITLE"
+          placeholder="Input text"
+          [hasError]="
+            !!(titleCtrl?.invalid && (titleCtrl?.touched || submitted))
+          "
+          [errorMessage]="titleCtrl?.errors?.['required'] ? 'Title is required.' : 'Title must be at least 2 characters.'"
+          required
+        ></app-input>
 
         <!-- Description -->
-        <div class="flex flex-col text-start font-bold relative w-full">
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            formControlName="description"
-            placeholder="Input text"
-            [ngClass]="{
-              'border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors resize-none border-border': true,
-              'border-error':
-                courseForm.get('description')?.invalid &&
-                (courseForm.get('description')?.touched || submitted)
-            }"
-            rows="4"
-            id="descriptionErrorMessage"
-          ></textarea>
-          <span
-            class="font-normal text-error absolute top-full"
-            *ngIf="
-              courseForm.get('description')?.invalid &&
-              (courseForm.get('description')?.touched || submitted)
-            "
-          >
-            Description is required (min 2 characters).
-          </span>
-        </div>
+        <app-input
+          [formControlName]="FIELDS.DESCRIPTION"
+          formName="courseForm"
+          [fieldName]="FIELDS.DESCRIPTION"
+          type="text"
+          [label]="FIELD_NAMES.DESCRIPTION"
+          placeholder="Input text"
+          [hasError]="
+            !!(
+              descriptionCtrl?.invalid &&
+              (descriptionCtrl?.touched || submitted)
+            )
+          "
+          [errorMessage]="descriptionCtrl?.errors?.['required'] ? 'Description is required.' : 'Description must be at least 2 characters.'"
+          controlType="textarea"
+          required
+        ></app-input>
       </div>
 
       <!-- Duration -->
-      <div class="flex flex-col gap-y-[24px] w-[601px] max-w-full">
-        <h3 class="text-2xl font-bold">Duration</h3>
+      <div class="flex flex-col gap-y-6 w-[601px] max-w-full">
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.DURATION }}</h3>
         <div class="flex flex-col tablet:flex-row gap-4 items-end">
-          <div class="flex flex-col text-start font-bold relative w-full">
-            <label for="duration">Duration</label>
-            <input
+          <div class="w-full">
+            <app-input
+              [formControlName]="FIELDS.DURATION"
+              formName="courseForm"
+              [fieldName]="FIELDS.DURATION"
               type="number"
-              id="duration"
-              formControlName="duration"
+              [label]="FIELD_NAMES.DURATION"
               placeholder="Input number"
-              [ngClass]="{
-                'border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors border-border': true,
-                'border-error':
-                  courseForm.get('duration')?.invalid &&
-                  (courseForm.get('duration')?.touched || submitted)
-              }"
-            />
-            <span
-              class="font-normal text-error absolute top-full"
-              *ngIf="
-                courseForm.get('duration')?.invalid &&
-                (courseForm.get('duration')?.touched || submitted)
+              [hasError]="
+                !!(
+                  durationCtrl?.invalid &&
+                  (durationCtrl?.touched || submitted)
+                )
               "
-              id="durationErrorMessage"
-            >
-              Duration must be 0 or more.
-            </span>
+              [errorMessage]="'Duration is required.'"
+              required
+            ></app-input>
           </div>
           <div
             class="tablet:flex tablet:w-[185px] tablet:flex-none tablet:h-[50px] tablet:items-center gap-x-1.5"
@@ -101,36 +74,28 @@
       </div>
 
       <!-- Authors -->
-      <div class="flex flex-col gap-y-[32px] w-[601px] max-w-full">
+      <div class="flex flex-col gap-y-8 w-[601px] max-w-full">
         <!-- Create Author -->
-        <div class="flex flex-col gap-y-[24px]">
-          <h3 class="text-2xl font-bold">Authors</h3>
+        <div class="flex flex-col gap-y-6">
+          <h3 class="text-2xl font-bold">{{ FIELD_NAMES.AUTHORS }}</h3>
           <div class="flex flex-col tablet:flex-row gap-4 items-end">
-            <div class="flex flex-col text-start font-bold relative w-full">
-              <label for="author">Author Name</label>
-              <input
+            <div class="w-full">
+              <app-input
+                [formControlName]="FIELDS.NEW_AUTHOR"
+                formName="courseForm"
+                [fieldName]="FIELDS.NEW_AUTHOR"
                 type="text"
-                id="author"
-                formControlName="author"
+                [label]="FIELD_NAMES.AUTHOR_NAME"
                 placeholder="Input text"
-                [ngClass]="{
-                  'border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors border-border': true,
-                  'border-error':
-                    courseForm.get('author')?.invalid &&
-                    (courseForm.get('author')?.touched || submitted)
-                }"
-              />
-              <span
-                class="font-normal text-error absolute top-full"
-                *ngIf="
-                  courseForm.get('author')?.invalid &&
-                  (courseForm.get('author')?.touched || submitted)
+                [hasError]="
+                  !!(authorCtrl?.invalid && (authorCtrl?.touched || submitted))
                 "
-                id="authorErrorMessage"
-              >
-                Only Latin letters and numbers, min 2 characters.
-              </span>
+                [errorMessage]="
+                  'Only Latin letters and numbers, min 2 characters.'
+                "
+              ></app-input>
             </div>
+
             <app-button
               id="createAuthor"
               (click)="addNewAuthor()"
@@ -143,7 +108,7 @@
 
         <!-- Available Authors List -->
         <div class="flex flex-col gap-y-6">
-          <h3 class="text-xl font-bold">Authors List</h3>
+          <h3 class="text-xl font-bold">{{ FIELD_NAMES.AUTHORS_LIST }}</h3>
           <ul *ngIf="availableAuthors.length; else noAvailableAuthors">
             <li
               *ngFor="let author of availableAuthors"
@@ -166,7 +131,7 @@
 
       <!-- Selected Authors -->
       <div class="flex flex-col gap-y-6 relative">
-        <h3 class="text-2xl font-bold">Course Authors</h3>
+        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.COURSE_AUTHORS }}</h3>
         <ul *ngIf="selectedAuthors.length; else empty">
           <li
             *ngFor="let author of selectedAuthors"

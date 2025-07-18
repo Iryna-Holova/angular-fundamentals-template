@@ -18,9 +18,17 @@ import { mockedAuthorsList as AUTHORS } from '@shared/mocks/mock';
   templateUrl: './course-form.component.html',
 })
 export class CourseFormComponent {
-  courseForm!: FormGroup;
-  allAuthors: Author[] = [...AUTHORS];
-  submitted = false;
+  courseForm: FormGroup;
+  allAuthors: Author[] = AUTHORS;
+  submitted: boolean = false;
+
+  FIELDS = {
+    TITLE: 'title',
+    DESCRIPTION: 'description',
+    DURATION: 'duration',
+    AUTHORS: 'authors',
+    NEW_AUTHOR: 'author',
+  };
 
   readonly BUTTON_TEXT = BUTTON_TEXT;
   readonly FIELD_NAMES = FIELD_NAMES;
@@ -29,23 +37,38 @@ export class CourseFormComponent {
     library.addIconPacks(fas);
 
     this.courseForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(2)]],
-      description: ['', [Validators.required, Validators.minLength(2)]],
-      duration: ['', [Validators.required, Validators.min(0)]],
-      authors: this.fb.array([], Validators.required),
-      author: [
+      [this.FIELDS.TITLE]: ['', [Validators.required, Validators.minLength(2)]],
+      [this.FIELDS.DESCRIPTION]: [
+        '',
+        [Validators.required, Validators.minLength(2)],
+      ],
+      [this.FIELDS.DURATION]: ['', [Validators.required, Validators.min(0)]],
+      [this.FIELDS.AUTHORS]: this.fb.array([], Validators.required),
+      [this.FIELDS.NEW_AUTHOR]: [
         '',
         [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9\s]+$/)],
       ],
     });
   }
 
+  get titleCtrl() {
+    return this.courseForm.get(this.FIELDS.TITLE);
+  }
+
+  get descriptionCtrl() {
+    return this.courseForm.get(this.FIELDS.DESCRIPTION);
+  }
+
+  get durationCtrl() {
+    return this.courseForm.get(this.FIELDS.DURATION);
+  }
+
   get durationValue() {
-    return this.courseForm.get('duration')?.value || 0;
+    return this.durationCtrl?.value || 0;
   }
 
   get authors(): FormArray {
-    return this.courseForm.get('authors') as FormArray;
+    return this.courseForm.get(this.FIELDS.AUTHORS) as FormArray;
   }
 
   get selectedAuthors(): Author[] {
@@ -57,6 +80,10 @@ export class CourseFormComponent {
       (author) =>
         !this.selectedAuthors.find((selected) => selected.id === author.id)
     );
+  }
+
+  get authorCtrl() {
+    return this.courseForm.get(this.FIELDS.NEW_AUTHOR);
   }
 
   addExistingAuthor(author: Author): void {
@@ -74,7 +101,7 @@ export class CourseFormComponent {
   }
 
   addNewAuthor(): void {
-    const authorControl = this.courseForm.get('author');
+    const authorControl = this.courseForm.get(this.FIELDS.NEW_AUTHOR);
 
     if (!authorControl || authorControl.invalid) {
       authorControl?.markAsTouched();

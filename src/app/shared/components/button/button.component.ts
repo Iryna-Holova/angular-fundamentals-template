@@ -13,6 +13,7 @@ export class ButtonComponent {
   @Input() type?: 'submit' | 'reset' | 'button' = 'button';
   @Input() transparent?: boolean = false;
   @Input() size?: 'sm' | 'md' | 'lg' = 'md';
+  @Input() light?: boolean = false;
 
   constructor(library: FaIconLibrary) {
     library.addIconPacks(fas);

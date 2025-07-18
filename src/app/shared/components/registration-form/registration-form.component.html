@@ -1,28 +1,116 @@
-<h2 class="text-align-center">Registration</h2>
-<div class="app-plate">
-  <div class="registration-form">
-    <div>
-      <div class="form__control">
-        <label for="name">Name</label>
-        <!--Use the name `name` for the form control.-->
-        <input type="text" id="name" placeholder="Input text"/>
-        <span id="nameErrorMessage" class="text-danger">Name is required.</span>
-      </div>
-      <div class="form__control">
-        <!--Use the name `email` for the form control.-->
-        <label for="email">Email</label>
-        <input type="text" id="email" placeholder="Input text"/>
-        <span id="emailErrorMessage" class="text-danger">Email is required.</span>
-      </div>
-      <div class="form__control">
-        <!--Use the name `password` for the form control.-->
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Input text"/>
-        <span id="passwordErrorMessage" class="text-danger">Password is required.</span>
-      </div>
+<div
+  class="bg-white px-5 py-[50px] tablet:px-20 laptop:px-[150px] laptop:pt-[77px] laptop:pb-[61px] max-w-full border border-border rounded-md"
+>
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-y-[34px] laptop:w-[286px] mb-[38px]"
+    novalidate
+  >
+    <!-- Name -->
+    <div class="flex flex-col text-start font-bold relative w-full">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        name="name"
+        placeholder="Input text"
+        [ngClass]="{
+          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
+          'border-error':
+            (nameCtrl?.invalid && nameCtrl?.touched) ||
+            (nameCtrl?.invalid && submitted)
+        }"
+      />
+      <span
+        id="nameErrorMessage"
+        class="font-normal text-error absolute top-full"
+        *ngIf="
+          (nameCtrl?.invalid && nameCtrl?.touched) ||
+          (nameCtrl?.invalid && submitted)
+        "
+      >
+        {{
+          nameCtrl?.errors?.['required']
+            ? 'Name is required.'
+            : 'Name must be at least 6 characters.'
+        }}
+      </span>
     </div>
-    <div class="form__action">
-      <app-button></app-button>
+
+    <!-- Email -->
+    <div class="flex flex-col text-start font-bold relative w-full">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        name="email"
+        placeholder="Input text"
+        [ngClass]="{
+          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
+          'border-error':
+            (emailCtrl?.invalid && emailCtrl?.touched) ||
+            (emailCtrl?.invalid && submitted)
+        }"
+        emailValidator
+      />
+      <span
+        id="emailErrorMessage"
+        class="font-normal text-error absolute top-full"
+        *ngIf="
+          (emailCtrl?.invalid && emailCtrl?.touched) ||
+          (emailCtrl?.invalid && submitted)
+        "
+      >
+        {{
+          emailCtrl?.errors?.['required']
+            ? 'Email is required.'
+            : 'Invalid email format.'
+        }}
+      </span>
     </div>
-  </div>
+
+    <!-- Password -->
+    <div class="flex flex-col text-start font-bold relative w-full">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        name="password"
+        placeholder="Input text"
+        [ngClass]="{
+          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
+          'border-error':
+            (passwordCtrl?.invalid && passwordCtrl?.touched) ||
+            (passwordCtrl?.invalid && submitted)
+        }"
+      />
+      <span
+        id="passwordErrorMessage"
+        class="font-normal text-error absolute top-full"
+        *ngIf="
+          (passwordCtrl?.invalid && passwordCtrl?.touched) ||
+          (passwordCtrl?.invalid && submitted)
+        "
+      >
+        Password is required.
+      </span>
+    </div>
+
+    <!-- Submit Button -->
+    <app-button [buttonText]="BUTTON_TEXT.REGISTER" type="submit"></app-button>
+  </form>
+
+  <p class="w-[286px] max-w-full">
+    If you have an account you may
+    <a
+      href="#"
+      class="font-bold underline decoration-transparent hover:decoration-grey transition-colors cursor-pointer"
+    >
+      {{ BUTTON_TEXT.LOGIN }}
+    </a>
+  </p>
 </div>

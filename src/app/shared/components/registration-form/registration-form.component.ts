@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 import {
   BUTTON_TEXT,
@@ -13,7 +18,8 @@ import {
 })
 export class RegistrationFormComponent implements OnInit {
   registrationForm!: FormGroup;
-  submitted = false;
+  submitted: boolean = false;
+  isPasswordVisible: boolean = false;
 
   FIELDS = {
     NAME: 'name',
@@ -35,16 +41,20 @@ export class RegistrationFormComponent implements OnInit {
     });
   }
 
-  get nameCtrl() {
+  get nameCtrl(): AbstractControl<string> | null {
     return this.registrationForm.get(this.FIELDS.NAME);
   }
 
-  get emailCtrl() {
+  get emailCtrl(): AbstractControl<string> | null {
     return this.registrationForm.get(this.FIELDS.EMAIL);
   }
 
-  get passwordCtrl() {
+  get passwordCtrl(): AbstractControl<string> | null {
     return this.registrationForm.get(this.FIELDS.PASSWORD);
+  }
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   onSubmit(): void {

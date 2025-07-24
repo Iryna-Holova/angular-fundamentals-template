@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
@@ -10,16 +11,18 @@ import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { Author } from '@app/models/author.model';
-import { BUTTON_TEXT, FIELD_NAMES } from '@app/shared/constants/text.constants';
 import { mockedAuthorsList as AUTHORS } from '@shared/mocks/mock';
+import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
+import { AUTHOR_NAME_PATTERN } from '@shared/constants/patterns.constants';
 
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
 })
 export class CourseFormComponent {
-  courseForm: FormGroup;
-  allAuthors: Author[] = AUTHORS;
+  courseForm!: FormGroup;
+  allAuthors: Author[] = [...AUTHORS];
+  availableAuthors: Author[] = [...AUTHORS];
   submitted: boolean = false;
 
   FIELDS = {
@@ -46,24 +49,24 @@ export class CourseFormComponent {
       [this.FIELDS.AUTHORS]: this.fb.array([], Validators.required),
       [this.FIELDS.NEW_AUTHOR]: [
         '',
-        [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9\s]+$/)],
+        [Validators.minLength(2), Validators.pattern(AUTHOR_NAME_PATTERN)],
       ],
     });
   }
 
-  get titleCtrl() {
+  get titleCtrl(): AbstractControl<string> | null {
     return this.courseForm.get(this.FIELDS.TITLE);
   }
 
-  get descriptionCtrl() {
+  get descriptionCtrl(): AbstractControl<string> | null {
     return this.courseForm.get(this.FIELDS.DESCRIPTION);
   }
 
-  get durationCtrl() {
+  get durationCtrl(): AbstractControl<number> | null {
     return this.courseForm.get(this.FIELDS.DURATION);
   }
 
-  get durationValue() {
+  get durationValue(): number {
     return this.durationCtrl?.value || 0;
   }
 
@@ -72,23 +75,25 @@ export class CourseFormComponent {
   }
 
   get selectedAuthors(): Author[] {
-    return this.authors.value;
+    return this.authors.value as Author[];
   }
 
-  get availableAuthors(): Author[] {
-    return this.allAuthors.filter(
+  get authorCtrl(): AbstractControl<string> | null {
+    return this.courseForm.get(this.FIELDS.NEW_AUTHOR);
+  }
+
+  setAvailableAuthors(): void {
+    this.availableAuthors = this.allAuthors.filter(
       (author) =>
         !this.selectedAuthors.find((selected) => selected.id === author.id)
     );
   }
 
-  get authorCtrl() {
-    return this.courseForm.get(this.FIELDS.NEW_AUTHOR);
-  }
-
   addExistingAuthor(author: Author): void {
     const authorControl = new FormControl(author);
     this.authors.push(authorControl);
+
+    this.setAvailableAuthors();
   }
 
   removeAuthor(authorId: string): void {
@@ -97,6 +102,8 @@ export class CourseFormComponent {
     );
     if (index >= 0) {
       this.authors.removeAt(index);
+
+      this.setAvailableAuthors();
     }
   }
 

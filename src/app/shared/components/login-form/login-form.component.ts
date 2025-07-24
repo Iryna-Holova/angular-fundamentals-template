@@ -13,6 +13,7 @@ import {
 })
 export class LoginFormComponent {
   @ViewChild('loginForm') public loginForm!: NgForm;
+  isPasswordVisible: boolean = false;
 
   FIELDS = {
     EMAIL: 'email',
@@ -22,6 +23,10 @@ export class LoginFormComponent {
   readonly BUTTON_TEXT = BUTTON_TEXT;
   readonly FIELD_NAMES = FIELD_NAMES;
   readonly PAGE_TEXT = PAGE_TEXT;
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
 
   onSubmit(): void {
     if (this.loginForm.valid) {

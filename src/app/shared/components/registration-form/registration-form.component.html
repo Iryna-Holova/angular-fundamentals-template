@@ -4,101 +4,57 @@
   <form
     [formGroup]="registrationForm"
     (ngSubmit)="onSubmit()"
-    class="flex flex-col gap-y-[34px] laptop:w-[286px] mb-[38px]"
+    class="form flex flex-col gap-y-[34px] laptop:w-[286px] mb-[38px]"
     novalidate
   >
     <!-- Name -->
-    <div class="flex flex-col text-start font-bold relative w-full">
-      <label for="name">Name</label>
-      <input
+    <app-input-wrapper
+      [label]="FIELD_NAMES.NAME"
+      [controlId]="'registrationForm_' + FIELDS.NAME"
+      [isError]="!!(nameCtrl?.invalid && (nameCtrl?.touched || submitted))"
+      [errorMessage]="nameCtrl?.errors?.['required'] ? 'Name is required.' : 'Name must be at least 6 characters.'"
+      ><input
         type="text"
-        id="name"
-        formControlName="name"
-        name="name"
+        [id]="'registrationForm_' + FIELDS.NAME"
+        [formControlName]="FIELDS.NAME"
+        [name]="FIELDS.NAME"
         placeholder="Input text"
-        [ngClass]="{
-          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
-          'border-error':
-            (nameCtrl?.invalid && nameCtrl?.touched) ||
-            (nameCtrl?.invalid && submitted)
-        }"
-      />
-      <span
-        id="nameErrorMessage"
-        class="font-normal text-error absolute top-full"
-        *ngIf="
-          (nameCtrl?.invalid && nameCtrl?.touched) ||
-          (nameCtrl?.invalid && submitted)
-        "
-      >
-        {{
-          nameCtrl?.errors?.['required']
-            ? 'Name is required.'
-            : 'Name must be at least 6 characters.'
-        }}
-      </span>
-    </div>
+        required
+    /></app-input-wrapper>
 
     <!-- Email -->
-    <div class="flex flex-col text-start font-bold relative w-full">
-      <label for="email">Email</label>
-      <input
+    <app-input-wrapper
+      [label]="FIELD_NAMES.EMAIL"
+      [controlId]="'registrationForm_' + FIELDS.EMAIL"
+      [isError]="!!(emailCtrl?.invalid && (emailCtrl?.touched || submitted))"
+      [errorMessage]="emailCtrl?.errors?.['required'] ? 'Email is required.' : 'Invalid email format.'"
+      ><input
         type="email"
-        id="email"
-        formControlName="email"
-        name="email"
+        [id]="'registrationForm_' + FIELDS.EMAIL"
+        [formControlName]="FIELDS.EMAIL"
+        [name]="FIELDS.EMAIL"
         placeholder="Input text"
-        [ngClass]="{
-          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
-          'border-error':
-            (emailCtrl?.invalid && emailCtrl?.touched) ||
-            (emailCtrl?.invalid && submitted)
-        }"
-        emailValidator
-      />
-      <span
-        id="emailErrorMessage"
-        class="font-normal text-error absolute top-full"
-        *ngIf="
-          (emailCtrl?.invalid && emailCtrl?.touched) ||
-          (emailCtrl?.invalid && submitted)
-        "
-      >
-        {{
-          emailCtrl?.errors?.['required']
-            ? 'Email is required.'
-            : 'Invalid email format.'
-        }}
-      </span>
-    </div>
+        required
+    /></app-input-wrapper>
 
     <!-- Password -->
-    <div class="flex flex-col text-start font-bold relative w-full">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        name="password"
+    <app-input-wrapper
+      [label]="FIELD_NAMES.PASSWORD"
+      [controlId]="'registrationForm_' + FIELDS.PASSWORD"
+      [isError]="
+        !!(passwordCtrl?.invalid && (passwordCtrl?.touched || submitted))
+      "
+      [errorMessage]="'Password is required.'"
+      [btnIconName]="isPasswordVisible ? 'eye' : 'eye-slash'"
+      (clickOnIcon)="togglePasswordVisibility()"
+      ><input
+        [type]="isPasswordVisible ? 'text' : 'password'"
+        [id]="'registrationForm_' + FIELDS.PASSWORD"
+        [formControlName]="FIELDS.PASSWORD"
+        [name]="FIELDS.PASSWORD"
         placeholder="Input text"
-        [ngClass]="{
-          'border border-border bg-white rounded-sm px-4 py-3 font-normal leading-24 transition-colors': true,
-          'border-error':
-            (passwordCtrl?.invalid && passwordCtrl?.touched) ||
-            (passwordCtrl?.invalid && submitted)
-        }"
-      />
-      <span
-        id="passwordErrorMessage"
-        class="font-normal text-error absolute top-full"
-        *ngIf="
-          (passwordCtrl?.invalid && passwordCtrl?.touched) ||
-          (passwordCtrl?.invalid && submitted)
-        "
-      >
-        Password is required.
-      </span>
-    </div>
+        required
+    /></app-input-wrapper>
 
     <!-- Submit Button -->
     <app-button [buttonText]="BUTTON_TEXT.REGISTER" type="submit"></app-button>

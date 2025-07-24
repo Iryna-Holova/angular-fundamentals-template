@@ -1,0 +1,20 @@
+<div class="group flex flex-col relative flex-none">
+  <label *ngIf="label" [for]="controlId" class="font-bold text-start">{{
+    label
+  }}</label>
+
+  <ng-content></ng-content>
+
+  <span *ngIf="isError" class="text-error absolute top-full">
+    {{ errorMessage }}
+  </span>
+
+  <span *ngIf="btnIcon" class="absolute right-0 bottom-0">
+    <app-button
+      [iconName]="btnIcon"
+      [transparent]="true"
+      [light]="true"
+      (click)="onClick()"
+    ></app-button
+  ></span>
+</div>

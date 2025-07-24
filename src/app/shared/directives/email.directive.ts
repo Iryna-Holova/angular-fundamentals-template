@@ -6,6 +6,8 @@ import {
   Validator,
 } from '@angular/forms';
 
+import { EMAIL_PATTERN } from '../constants/patterns.constants';
+
 @Directive({
   selector: '[emailValidator]',
   providers: [
@@ -19,9 +21,8 @@ import {
 export class EmailValidatorDirective implements Validator {
   validate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!value || emailRegex.test(value)) {
+    if (!value || EMAIL_PATTERN.test(value)) {
       return null;
     }
 

@@ -1,4 +1,8 @@
-<div class="app-search">
-  <input type="text" placeholder="Input text">
-  <app-button></app-button>
+<div class="flex flex-col items-end tablet:flex-row gap-4">
+  <input type="text" [(ngModel)]="searchValue" [placeholder]="placeholder" />
+  <app-button
+    (click)="onSearch()"
+    [buttonText]="BUTTON_TEXT.SEARCH"
+    [width]="148"
+  ></app-button>
 </div>

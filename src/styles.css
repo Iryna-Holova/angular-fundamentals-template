@@ -33,4 +33,20 @@
     color: theme('colors.grey');
     background-color: theme('colors.light');
   }
+
+  input,
+  textarea {
+    @apply w-full px-4 py-3 border border-border bg-white rounded leading-6 group-hover:border-grey transition-colors;
+  }
+
+  .form.ng-submitted input.ng-invalid,
+  .form.ng-submitted textarea.ng-invalid,
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched {
+    @apply border-error;
+  }
+
+  textarea {
+    resize: none;
+  }
 }

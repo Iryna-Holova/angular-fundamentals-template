@@ -25,9 +25,7 @@
         <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
           {{ FIELD_NAMES.DURATION }}:
         </h3>
-        <span
-          ><b>{{ durationTime }}</b> {{ durationSuffix }}</span
-        >
+        <span>{{ course.duration | duration }}</span>
       </li>
 
       <li class="flex flex-col tablet:flex-row tablet:items-center">

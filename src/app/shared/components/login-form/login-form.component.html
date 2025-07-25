@@ -1,29 +1,67 @@
-<h2 class="text-align-center">Login</h2>
-<div class="app-plate">
-  <form #loginForm="ngForm">
-    <div class="login-form">
-      <div>
-        <div class="form__control">
-          <label for="email">Email</label>
-          <!--Use the name `email` for the form control.-->
-          <input type="text" id="email" placeholder="Input text"/>
-          <span id="emailErrorMessage" class="text-danger">Email is required.</span>
-        </div>
-        <div class="form__control">
-          <label for="password">Password</label>
-          <!--Use the name `password` for the form control.-->
-          <input type="password" id="password" placeholder="Input text"/>
-          <span id="passwordErrorMessage" class="text-danger">Password is required.</span>
-        </div>
-      </div>
-      <div>
-        <div class="form__action">
-          <app-button></app-button>
-        </div>
-        <div class="form__text">
-          If you don't have an account you may <strong>Registration</strong>
-        </div>
-      </div>
-    </div>
+<div
+  class="bg-white px-5 py-[50px] tablet:px-20 laptop:px-[150px] laptop:pt-[77px] laptop:pb-[61px] max-w-full border border-border rounded-md"
+>
+  <form
+    #loginForm="ngForm"
+    (ngSubmit)="onSubmit()"
+    class="form flex flex-col gap-y-[34px] laptop:w-[286px] mb-[38px]"
+    novalidate
+  >
+    <!-- Email -->
+    <app-input-wrapper
+      [label]="FIELD_NAMES.EMAIL"
+      [controlId]="'loginForm_' + FIELDS.EMAIL"
+      [isError]="
+        !!(emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted))
+      "
+      [errorMessage]="emailCtrl.errors?.['required'] ? 'Email is required.' : 'Invalid email format.'"
+    >
+      <input
+        type="email"
+        [id]="'loginForm_' + FIELDS.EMAIL"
+        [name]="FIELDS.EMAIL"
+        placeholder="Input text"
+        required
+        emailValidator
+        ngModel
+        #emailCtrl="ngModel"
+    /></app-input-wrapper>
+
+    <!-- Password -->
+    <app-input-wrapper
+      [label]="FIELD_NAMES.PASSWORD"
+      [controlId]="'loginForm_' + FIELDS.PASSWORD"
+      [isError]="
+        !!(
+          passwordCtrl.invalid &&
+          (passwordCtrl.touched || loginForm.submitted)
+        )
+      "
+      [errorMessage]="'Password is required.'"
+      [btnIconName]="isPasswordVisible ? 'eye' : 'eye-slash'"
+      (clickOnIcon)="togglePasswordVisibility()"
+    >
+      <input
+        [type]="isPasswordVisible ? 'text' : 'password'"
+        [id]="'loginForm_' + FIELDS.PASSWORD"
+        [name]="FIELDS.PASSWORD"
+        placeholder="Input text"
+        required
+        ngModel
+        #passwordCtrl="ngModel"
+    /></app-input-wrapper>
+
+    <!-- Submit Button -->
+    <app-button [buttonText]="BUTTON_TEXT.LOGIN" type="submit"></app-button>
   </form>
+
+  <p class="w-[286px] max-w-full">
+    If you don't have an account you may
+    <a
+      href=""
+      class="font-bold underline decoration-transparent hover:decoration-grey transition-colors cursor-pointer"
+    >
+      {{ BUTTON_TEXT.REGISTER }}
+    </a>
+  </p>
 </div>

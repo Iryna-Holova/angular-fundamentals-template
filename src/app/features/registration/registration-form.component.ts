@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,11 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {
-  BUTTON_TEXT,
-  FIELD_NAMES,
-  PAGE_TEXT,
-} from '@shared/constants/text.constants';
+import { AuthService } from '@app/auth/services/auth.service';
+import { TEXT } from '@shared/constants';
 
 @Component({
   selector: 'app-registration-form',
@@ -27,11 +25,13 @@ export class RegistrationFormComponent implements OnInit {
     PASSWORD: 'password',
   };
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
-  readonly FIELD_NAMES = FIELD_NAMES;
-  readonly PAGE_TEXT = PAGE_TEXT;
+  readonly TEXT = TEXT;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.registrationForm = this.fb.group({
@@ -60,7 +60,18 @@ export class RegistrationFormComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     if (this.registrationForm.valid) {
-      console.log('Form submitted:', this.registrationForm.value);
+      this.authService.register(this.registrationForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          if (err.error?.errors) {
+            alert(err.error.errors.join('\n'));
+          } else {
+            alert('Unexpected error. Please try again later.');
+          }
+        },
+      });
     }
   }
 }

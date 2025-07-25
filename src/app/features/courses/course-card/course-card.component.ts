@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Author } from '@app/models/author.model';
 import { Course } from '@app/models/course.model';
 import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
 
@@ -8,6 +9,7 @@ import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
 })
 export class CourseCardComponent {
   @Input() course!: Course;
+  @Input() authors!: Author[];
   @Input() editable = false;
 
   @Output() clickOnShow = new EventEmitter<void>();

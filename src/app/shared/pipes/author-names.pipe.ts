@@ -1,13 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { mockedAuthorsList as AUTHORS } from '@shared/mocks/mock';
+import { Author } from '@app/models/author.model';
 
 @Pipe({
   name: 'authorNames',
 })
 export class AuthorNamesPipe implements PipeTransform {
-  transform(authorIds: string[]): string {
+  transform(authorIds: string[], authorsList: Author[]): string {
+    const authorsMap = new Map(authorsList.map((a) => [a.id, a.name]));
     return authorIds
-      .map((id) => AUTHORS.find((a) => a.id === id)?.name)
+      .map((id) => authorsMap.get(id))
       .filter(Boolean)
       .join(', ');
   }

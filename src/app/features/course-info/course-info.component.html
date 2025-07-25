@@ -1,4 +1,4 @@
-<section class="py-[71px]">
+<section *ngIf="course$ | async as course" class="py-[71px]">
   <h2 class="text-[32px]/10 font-bold mb-6">{{ course.title }}</h2>
 
   <div
@@ -6,7 +6,7 @@
   >
     <div>
       <h3 class="text-xl/5 font-bold mb-[25px]">
-        {{ FIELD_NAMES.DESCRIPTION }}:
+        {{ TEXT.FIELD_NAMES.DESCRIPTION }}:
       </h3>
       <p class="desktop:w-[487px]">{{ course.description }}</p>
     </div>
@@ -16,21 +16,21 @@
     >
       <li class="flex flex-col tablet:flex-row tablet:items-center">
         <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
-          {{ FIELD_NAMES.ID }}:
+          {{ TEXT.FIELD_NAMES.ID }}:
         </h3>
         <span>{{ course.id }}</span>
       </li>
 
       <li class="flex flex-col tablet:flex-row tablet:items-center">
         <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
-          {{ FIELD_NAMES.DURATION }}:
+          {{ TEXT.FIELD_NAMES.DURATION }}:
         </h3>
         <span>{{ course.duration | duration }}</span>
       </li>
 
       <li class="flex flex-col tablet:flex-row tablet:items-center">
         <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
-          {{ FIELD_NAMES.CREATED }}:
+          {{ TEXT.FIELD_NAMES.CREATED }}:
         </h3>
         <time [attr.datetime]="course.creationDate | customDate : 'time'">
           {{ course.creationDate | customDate }}
@@ -39,13 +39,19 @@
 
       <li class="flex flex-col tablet:flex-row tablet:items-center">
         <h3 class="text-xl/8 font-bold w-[130px] flex-none self-start">
-          {{ FIELD_NAMES.AUTHORS }}:
+          {{ TEXT.FIELD_NAMES.AUTHORS }}:
         </h3>
-        <span>{{ course.authors | authorNames }}</span>
+        <span *ngIf="authors$ | async as authors">{{
+          course.authors | authorNames : authors
+        }}</span>
       </li>
     </ul>
   </div>
   <div class="flex justify-end">
-    <app-button [buttonText]="BUTTON_TEXT.BACK" [width]="185"></app-button>
+    <app-button
+      routerLink="/courses"
+      [buttonText]="TEXT.BUTTON_TEXT.BACK"
+      [width]="185"
+    ></app-button>
   </div>
 </section>

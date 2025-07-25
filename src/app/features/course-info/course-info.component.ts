@@ -1,14 +1,33 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Author } from '@app/models/author.model';
+
 import { Course } from '@app/models/course.model';
-import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
+import { CoursesStoreService } from '@app/services/courses-store.service';
+import { TEXT } from '@shared/constants';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-course-info',
   templateUrl: './course-info.component.html',
 })
 export class CourseInfoComponent {
-  @Input() course!: Course;
+  readonly TEXT = TEXT;
+  course$!: Observable<Course>;
+  id!: string;
+  authors$!: Observable<Author[]>;
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
-  readonly FIELD_NAMES = FIELD_NAMES;
+  constructor(
+    private route: ActivatedRoute,
+    private coursesStore: CoursesStoreService
+  ) {}
+
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id')!;
+    this.course$ = this.coursesStore
+      .getCourse(this.id)
+      .pipe(map((response) => response.result));
+    this.authors$ = this.coursesStore.authors$;
+    this.coursesStore.getAllAuthors().subscribe();
+  }
 }

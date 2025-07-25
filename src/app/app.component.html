@@ -1,38 +1,15 @@
 <app-header>
-  <span class="text-sm/5 font-bold">Harry Potter</span>
-  <app-button [buttonText]="BUTTON_TEXT.LOGOUT" [width]="140"></app-button>
+  <ng-container *ngIf="isAuthorized$ | async">
+    <span class="text-sm/5 font-bold">{{ userName$ | async }}</span>
+    <app-button
+      (click)="onLogout()"
+      [buttonText]="TEXT.BUTTON_TEXT.LOGOUT"
+      [width]="140"
+    ></app-button
+  ></ng-container>
 </app-header>
 <div class="container">
-  <!-- Info component -->
-  <app-info
-    [title]="PAGE_TEXT.NO_COURSES.TITLE"
-    [text]="PAGE_TEXT.NO_COURSES.SUBTITLE"
-  >
-    <app-button
-      [buttonText]="BUTTON_TEXT.ADD_COURSE"
-      [width]="233"
-    ></app-button>
-  </app-info>
-
-  <!-- Courses component -->
-  <app-courses></app-courses>
-
-  <!-- Course Info component -->
-  <app-course-info [course]="courses[0]"></app-course-info>
-
-  <!-- Login Form component -->
-  <app-info [title]="PAGE_TEXT.LOGIN.TITLE">
-    <app-login-form></app-login-form>
-  </app-info>
-
-  <!-- Registration Form component -->
-  <app-info [title]="PAGE_TEXT.REGISTRATION.TITLE"
-    ><app-registration-form></app-registration-form
-  ></app-info>
-
-  <!-- Course Form component -->
-  <app-course-form></app-course-form>
-
+  <router-outlet></router-outlet>
   <!-- Modal component -->
   <!-- <app-modal [message]="'Message'" [title]="'Title'" [okButtonText]="'Ok'" [cancelButtonText]="'Cancel'"></app-modal> -->
 </div>

@@ -1,35 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ModalComponent } from './components/modal/modal.component';
+
 import {
   HeaderComponent,
   ButtonComponent,
   InfoComponent,
   InputWrapperComponent,
-  SearchComponent,
-  CourseCardComponent,
-  LoginFormComponent,
-  RegistrationFormComponent,
-  CourseFormComponent,
-} from './components';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthorNamesPipe } from './pipes/author-names.pipe';
-import { DurationPipe } from './pipes/duration.pipe';
-import { CustomDatePipe } from './pipes/custom-date.pipe';
+} from '@shared/components';
+import { ModalComponent } from '@shared/components/modal/modal.component';
 import { EmailValidatorDirective } from '@shared/directives/email.directive';
+import { AuthorNamesPipe, CustomDatePipe, DurationPipe } from '@shared/pipes';
 
 const components = [
   HeaderComponent,
   ButtonComponent,
   InfoComponent,
   InputWrapperComponent,
-  SearchComponent,
   ModalComponent,
-  CourseCardComponent,
-  LoginFormComponent,
-  RegistrationFormComponent,
-  CourseFormComponent,
   AuthorNamesPipe,
   DurationPipe,
   CustomDatePipe,
@@ -38,7 +27,8 @@ const components = [
 
 @NgModule({
   declarations: [components],
-  imports: [CommonModule, FontAwesomeModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FontAwesomeModule, RouterModule],
   exports: [components],
+  providers: [{ provide: 'Window', useValue: window }],
 })
 export class SharedModule {}

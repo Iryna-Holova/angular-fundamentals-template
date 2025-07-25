@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { mockedCoursesList } from '@shared/mocks/mock';
-import { BUTTON_TEXT, PAGE_TEXT } from '@shared/constants/text.constants';
+import { Router } from '@angular/router';
+import { UserStoreService } from '@app/user/services/user-store.service';
+import { AuthService } from '@app/auth/services/auth.service';
+import { TEXT } from '@shared/constants';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +10,24 @@ import { BUTTON_TEXT, PAGE_TEXT } from '@shared/constants/text.constants';
 })
 export class AppComponent {
   title = 'courses-app';
-  courses = mockedCoursesList;
-  readonly BUTTON_TEXT = BUTTON_TEXT;
-  readonly PAGE_TEXT = PAGE_TEXT;
+  readonly TEXT = TEXT;
+
+  userName$ = this.userStore.name$;
+  isAuthorized$ = this.authService.isAuthorized$;
+
+  constructor(
+    private router: Router,
+    private userStore: UserStoreService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.userStore.getUser().subscribe();
+  }
+
+  onLogout(): void {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/login']);
+    });
+  }
 }

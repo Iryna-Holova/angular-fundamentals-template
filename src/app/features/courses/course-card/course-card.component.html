@@ -5,13 +5,14 @@
   <div
     class="flex flex-col gap-y-5 laptop:flex-row laptop:gap-x-[30px] desktop:gap-x-[47px]"
   >
-    <p class="line-clamp-7">{{ course.description }}</p>
+    <p class="line-clamp-7 w-full">{{ course.description }}</p>
     <div
       class="flex-none w-full laptop:w-[310px] flex flex-col items-end laptop:items-start"
     >
       <div class="mb-[31px] w-full">
         <p class="line-clamp-1">
-          <b>{{ FIELD_NAMES.AUTHORS }}:</b> {{ course.authors | authorNames }}
+          <b>{{ FIELD_NAMES.AUTHORS }}:</b>
+          {{ course.authors | authorNames : authors }}
         </p>
         <p>
           <b>{{ FIELD_NAMES.DURATION }}:</b>

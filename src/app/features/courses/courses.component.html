@@ -1,17 +1,36 @@
-<section class="py-[71px]">
-  <div class="mb-8 flex flex-wrap justify-between gap-5">
-    <div class="w-full laptop:w-[564px]"><app-search></app-search></div>
-    <app-button
-      [buttonText]="BUTTON_TEXT.ADD_COURSE"
-      [width]="183"
-    ></app-button>
-  </div>
+<ng-container *ngIf="courses?.length; else noCourses">
+  <section class="py-[71px]">
+    <div class="mb-8 flex flex-wrap justify-between gap-5">
+      <div class="w-full laptop:w-[564px]"><app-search></app-search></div>
+      <app-button
+        *ngIf="isAdmin$ | async"
+        routerLink="/courses/add"
+        [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
+        [width]="183"
+      ></app-button>
+    </div>
 
-  <app-courses-list
-    [courses]="courses"
-    [editable]="true"
-    (showCourse)="onShowCourse($event)"
-    (editCourse)="onEditCourse($event)"
-    (deleteCourse)="onDeleteCourse($event)"
-  ></app-courses-list>
-</section>
+    <app-courses-list
+      [courses]="courses"
+      [authors]="authors"
+      [editable]="true"
+      (showCourse)="onShowCourse($event)"
+      (editCourse)="onEditCourse($event)"
+      (deleteCourse)="onDeleteCourse($event)"
+    ></app-courses-list>
+  </section>
+</ng-container>
+
+<ng-template #noCourses>
+  <app-info
+    [title]="TEXT.PAGE_TEXT.NO_COURSES.TITLE"
+    [text]="TEXT.PAGE_TEXT.NO_COURSES.SUBTITLE"
+  >
+    <app-button
+      *ngIf="isAdmin$ | async"
+      routerLink="/courses/add"
+      [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
+      [width]="233"
+    ></app-button>
+  </app-info>
+</ng-template>

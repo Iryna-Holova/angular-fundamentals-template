@@ -1,26 +1,58 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { CoursesStoreService } from '@app/services/courses-store.service';
+import { UserStoreService } from '@app/user/services/user-store.service';
 import { Course } from '@app/models/course.model';
-import { mockedCoursesList } from '@shared/mocks/mock';
-import { BUTTON_TEXT } from '@shared/constants/text.constants';
+import { TEXT } from '@shared/constants';
+import { Author } from '@app/models/author.model';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
 })
-export class CoursesComponent {
-  courses: Course[] = mockedCoursesList;
+export class CoursesComponent implements OnInit, OnDestroy {
+  isAdmin$ = this.userStore.isAdmin$;
+  courses: Course[] = [];
+  authors: Author[] = [];
+  readonly TEXT = TEXT;
+  private subscription = new Subscription();
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
+  constructor(
+    private router: Router,
+    private userStore: UserStoreService,
+    private coursesStore: CoursesStoreService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.coursesStore.courses$.subscribe((courses) => {
+        this.courses = courses;
+      })
+    );
+    this.subscription.add(
+      this.coursesStore.authors$.subscribe((authors) => {
+        this.authors = authors;
+      })
+    );
+    this.coursesStore.getAll().subscribe();
+    this.coursesStore.getAllAuthors().subscribe();
+  }
 
   onShowCourse(id: string): void {
-    console.log('Show course', id); // TODO
+    this.router.navigate(['/courses', id]);
   }
 
   onEditCourse(id: string): void {
-    console.log('Edit course', id); // TODO
+    this.router.navigate(['/courses', 'edit', id]);
   }
 
   onDeleteCourse(id: string): void {
-    console.log('Delete course', id); // TODO
+    this.coursesStore.deleteCourse(id).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

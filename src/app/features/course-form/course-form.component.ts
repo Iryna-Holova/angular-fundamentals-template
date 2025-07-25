@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -11,19 +11,21 @@ import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { Author } from '@app/models/author.model';
-import { mockedAuthorsList as AUTHORS } from '@shared/mocks/mock';
 import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
 import { AUTHOR_NAME_PATTERN } from '@shared/constants/patterns.constants';
+import { CoursesStoreService } from '@app/services/courses-store.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
 })
-export class CourseFormComponent {
+export class CourseFormComponent implements OnInit, OnDestroy {
   courseForm!: FormGroup;
-  allAuthors: Author[] = [...AUTHORS];
-  availableAuthors: Author[] = [...AUTHORS];
+  allAuthors: Author[] = [];
   submitted: boolean = false;
+  private subscription = new Subscription();
 
   FIELDS = {
     TITLE: 'title',
@@ -36,7 +38,12 @@ export class CourseFormComponent {
   readonly BUTTON_TEXT = BUTTON_TEXT;
   readonly FIELD_NAMES = FIELD_NAMES;
 
-  constructor(private fb: FormBuilder, public library: FaIconLibrary) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    public library: FaIconLibrary,
+    private coursesStore: CoursesStoreService
+  ) {
     library.addIconPacks(fas);
 
     this.courseForm = this.fb.group({
@@ -52,6 +59,15 @@ export class CourseFormComponent {
         [Validators.minLength(2), Validators.pattern(AUTHOR_NAME_PATTERN)],
       ],
     });
+  }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.coursesStore.authors$.subscribe((authors) => {
+        this.allAuthors = authors;
+      })
+    );
+    this.coursesStore.getAllAuthors().subscribe();
   }
 
   get titleCtrl(): AbstractControl<string> | null {
@@ -82,8 +98,8 @@ export class CourseFormComponent {
     return this.courseForm.get(this.FIELDS.NEW_AUTHOR);
   }
 
-  setAvailableAuthors(): void {
-    this.availableAuthors = this.allAuthors.filter(
+  get availableAuthors(): Author[] {
+    return this.allAuthors.filter(
       (author) =>
         !this.selectedAuthors.find((selected) => selected.id === author.id)
     );
@@ -92,8 +108,6 @@ export class CourseFormComponent {
   addExistingAuthor(author: Author): void {
     const authorControl = new FormControl(author);
     this.authors.push(authorControl);
-
-    this.setAvailableAuthors();
   }
 
   removeAuthor(authorId: string): void {
@@ -102,8 +116,6 @@ export class CourseFormComponent {
     );
     if (index >= 0) {
       this.authors.removeAt(index);
-
-      this.setAvailableAuthors();
     }
   }
 
@@ -118,13 +130,10 @@ export class CourseFormComponent {
     const authorName = authorControl.value?.trim();
     if (!authorName) return;
 
-    const newAuthor: Author = {
-      id: Date.now().toString(),
-      name: authorName,
-    };
+    this.coursesStore.createAuthor(authorName).subscribe((response) => {
+      this.addExistingAuthor(response.result);
+    });
 
-    this.allAuthors.push(newAuthor);
-    this.addExistingAuthor(newAuthor);
     authorControl.reset();
   }
 
@@ -133,11 +142,21 @@ export class CourseFormComponent {
     this.courseForm.markAllAsTouched();
 
     if (this.courseForm.invalid) {
-      console.log('Form is invalid');
       return;
     }
 
     const { author, authors, ...formData } = this.courseForm.value;
+
+    this.coursesStore
+      .createCourse({
+        ...formData,
+        authors: authors.map((author: Author) => author.id),
+      })
+      .subscribe((response) => {
+        if (response.successful) {
+          this.router.navigate(['/courses']);
+        }
+      });
 
     console.log('Form submitted:', {
       ...formData,
@@ -147,5 +166,9 @@ export class CourseFormComponent {
     this.authors.clear();
     this.courseForm.reset();
     this.submitted = false;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

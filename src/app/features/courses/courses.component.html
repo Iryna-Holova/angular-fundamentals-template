@@ -4,7 +4,7 @@
       <div class="w-full laptop:w-[564px]"><app-search></app-search></div>
       <app-button
         *ngIf="isAdmin"
-        [routerLink]="ROUTES.COURSE_ADD"
+        [routerLink]="'/' + ROUTES.COURSE_ADD"
         [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
         [width]="183"
       ></app-button>
@@ -13,7 +13,7 @@
     <app-courses-list
       [courses]="courses"
       [authors]="authors"
-      [editable]="true"
+      [editable]="isAdmin"
       (showCourse)="onShowCourse($event)"
       (editCourse)="onEditCourse($event)"
       (deleteCourse)="onDeleteCourse($event)"
@@ -28,7 +28,7 @@
   >
     <app-button
       *ngIf="isAdmin"
-      [routerLink]="ROUTES.COURSE_ADD"
+      [routerLink]="'/' + ROUTES.COURSE_ADD"
       [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
       [width]="233"
     ></app-button>

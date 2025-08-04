@@ -5,4 +5,7 @@ export enum ENDPOINTS {
   REGISTER = '/register',
   LOGOUT = '/logout',
   CURRENT = '/users/me',
+  COURSES = '/courses',
+  COURSES_ADD = '/courses/add',
+  COURSES_FILTER = '/courses/filter',
 }

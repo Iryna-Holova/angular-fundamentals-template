@@ -6,16 +6,19 @@
     >
       <!-- Main Info -->
       <div class="course flex flex-col gap-y-6 w-full">
-        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.MAIN_INFO }}</h3>
+        <h3 class="text-2xl font-bold">{{ TEXT.FIELD_NAMES.MAIN_INFO }}</h3>
 
         <!-- Title -->
         <app-input-wrapper
-          [label]="FIELD_NAMES.TITLE"
+          [label]="TEXT.FIELD_NAMES.TITLE"
           [controlId]="'courseForm_' + FIELDS.TITLE"
           [isError]="
-            !!(titleCtrl?.invalid && (titleCtrl?.touched || submitted))
+            !!(
+              courseForm.get(FIELDS.TITLE)?.invalid &&
+              (courseForm.get(FIELDS.TITLE)?.touched || submitted)
+            )
           "
-          [errorMessage]="titleCtrl?.errors?.['required'] ? 'Title is required.' : 'Title must be at least 2 characters.'"
+          [errorMessage]="courseForm.get(FIELDS.TITLE)?.errors?.['required'] ? 'Title is required.' : 'Title must be at least 2 characters.'"
         >
           <input
             type="text"
@@ -29,15 +32,15 @@
 
         <!-- Description -->
         <app-input-wrapper
-          [label]="FIELD_NAMES.DESCRIPTION"
+          [label]="TEXT.FIELD_NAMES.DESCRIPTION"
           [controlId]="'courseForm_' + FIELDS.DESCRIPTION"
           [isError]="
             !!(
-              descriptionCtrl?.invalid &&
-              (descriptionCtrl?.touched || submitted)
+              courseForm.get(FIELDS.DESCRIPTION)?.invalid &&
+              (courseForm.get(FIELDS.DESCRIPTION)?.touched || submitted)
             )
           "
-          [errorMessage]="descriptionCtrl?.errors?.['required'] ? 'Description is required.' : 'Description must be at least 2 characters.'"
+          [errorMessage]="courseForm.get(FIELDS.DESCRIPTION)?.errors?.['required'] ? 'Description is required.' : 'Description must be at least 2 characters.'"
         >
           <textarea
             [id]="'courseForm_' + FIELDS.DESCRIPTION"
@@ -52,16 +55,16 @@
 
       <!-- Duration -->
       <div class="flex flex-col gap-y-[24px] w-[601px] max-w-full">
-        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.DURATION }}</h3>
+        <h3 class="text-2xl font-bold">{{ TEXT.FIELD_NAMES.DURATION }}</h3>
         <div class="flex flex-col tablet:flex-row gap-4 items-end">
           <div class="w-full">
             <app-input-wrapper
-              [label]="FIELD_NAMES.DURATION"
+              [label]="TEXT.FIELD_NAMES.DURATION"
               [controlId]="'courseForm_' + FIELDS.DURATION"
               [isError]="
                 !!(
-                  durationCtrl?.invalid &&
-                  (durationCtrl?.touched || submitted)
+                  courseForm.get(FIELDS.DURATION)?.invalid &&
+                  (courseForm.get(FIELDS.DURATION)?.touched || submitted)
                 )
               "
               [errorMessage]="'Duration is required.'"
@@ -79,7 +82,7 @@
           <div
             class="tablet:flex tablet:w-[185px] tablet:flex-none tablet:h-[50px] tablet:items-center gap-x-1.5"
           >
-            <b>{{ durationValue | duration }}</b>
+            <b>{{ courseForm.get(FIELDS.DURATION)?.value | duration }}</b>
           </div>
         </div>
       </div>
@@ -88,14 +91,17 @@
       <div class="flex flex-col gap-y-[32px] w-[601px] max-w-full">
         <!-- Create Author -->
         <div class="flex flex-col gap-y-[24px]">
-          <h3 class="text-2xl font-bold">{{ FIELD_NAMES.AUTHORS }}</h3>
+          <h3 class="text-2xl font-bold">{{ TEXT.FIELD_NAMES.AUTHORS }}</h3>
           <div class="flex flex-col tablet:flex-row gap-4 items-end">
             <div class="w-full">
               <app-input-wrapper
-                [label]="FIELD_NAMES.AUTHOR_NAME"
+                [label]="TEXT.FIELD_NAMES.AUTHOR_NAME"
                 [controlId]="'courseForm_' + FIELDS.NEW_AUTHOR"
                 [isError]="
-                  !!(authorCtrl?.invalid && (authorCtrl?.touched || submitted))
+                  !!(
+                    courseForm.get(FIELDS.NEW_AUTHOR)?.invalid &&
+                    (courseForm.get(FIELDS.NEW_AUTHOR)?.touched || submitted)
+                  )
                 "
                 [errorMessage]="
                   'Only Latin letters and numbers, min 2 characters.'
@@ -111,7 +117,7 @@
             <app-button
               id="createAuthor"
               (click)="addNewAuthor()"
-              [buttonText]="BUTTON_TEXT.CREATE_AUTHOR"
+              [buttonText]="TEXT.BUTTON_TEXT.CREATE_AUTHOR"
               [width]="185"
               type="button"
             ></app-button>
@@ -120,7 +126,7 @@
 
         <!-- Available Authors List -->
         <div class="flex flex-col gap-y-6">
-          <h3 class="text-xl font-bold">{{ FIELD_NAMES.AUTHORS_LIST }}</h3>
+          <h3 class="text-xl font-bold">{{ TEXT.FIELD_NAMES.AUTHORS_LIST }}</h3>
           <ul *ngIf="availableAuthors.length; else noAvailableAuthors">
             <li
               *ngFor="let author of availableAuthors"
@@ -143,7 +149,9 @@
 
       <!-- Selected Authors -->
       <div class="flex flex-col gap-y-6 relative">
-        <h3 class="text-2xl font-bold">{{ FIELD_NAMES.COURSE_AUTHORS }}</h3>
+        <h3 class="text-2xl font-bold">
+          {{ TEXT.FIELD_NAMES.COURSE_AUTHORS }}
+        </h3>
         <ul *ngIf="selectedAuthors.length; else empty">
           <li
             *ngFor="let author of selectedAuthors"
@@ -174,12 +182,12 @@
     <div class="flex flex-wrap justify-end items-end gap-5">
       <app-button
         routerLink="/courses"
-        [buttonText]="BUTTON_TEXT.BACK"
+        [buttonText]="TEXT.BUTTON_TEXT.BACK"
         [width]="185"
         type="button"
       ></app-button>
       <app-button
-        [buttonText]="BUTTON_TEXT.ADD_COURSE"
+        [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
         type="submit"
         [width]="185"
       ></app-button>

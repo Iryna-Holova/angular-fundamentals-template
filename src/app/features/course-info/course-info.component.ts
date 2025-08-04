@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Author } from '@app/models/author.model';
+import { ActivatedRoute } from '@angular/router';
 
-import { Course } from '@app/models/course.model';
+import { Author, Course } from '@shared/types/courses.types';
 import { CoursesStoreService } from '@app/services/courses-store.service';
 import { TEXT } from '@shared/constants';
 import { map, Observable } from 'rxjs';
@@ -24,9 +23,7 @@ export class CourseInfoComponent {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
-    this.course$ = this.coursesStore
-      .getCourse(this.id)
-      .pipe(map((response) => response.result));
+    this.course$ = this.coursesStore.getCourse(this.id);
     this.authors$ = this.coursesStore.authors$;
     this.coursesStore.getAllAuthors().subscribe();
   }

@@ -11,15 +11,15 @@
     >
       <div class="mb-[31px] w-full">
         <p class="line-clamp-1">
-          <b>{{ FIELD_NAMES.AUTHORS }}:</b>
+          <b>{{ TEXT.FIELD_NAMES.AUTHORS }}:</b>
           {{ course.authors | authorNames : authors }}
         </p>
         <p>
-          <b>{{ FIELD_NAMES.DURATION }}:</b>
+          <b>{{ TEXT.FIELD_NAMES.DURATION }}:</b>
           {{ course.duration | duration }}
         </p>
         <p>
-          <b>{{ FIELD_NAMES.CREATED }}:</b>
+          <b>{{ TEXT.FIELD_NAMES.CREATED }}:</b>
           <time [attr.datetime]="course.creationDate | customDate : 'time'">
             {{ course.creationDate | customDate }}
           </time>
@@ -27,7 +27,7 @@
       </div>
       <div class="flex gap-2.5">
         <app-button
-          [buttonText]="BUTTON_TEXT.SHOW_COURSE"
+          [buttonText]="TEXT.BUTTON_TEXT.SHOW_COURSE"
           [width]="180"
           (click)="onShow()"
         ></app-button>

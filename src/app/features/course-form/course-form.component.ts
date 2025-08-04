@@ -1,52 +1,69 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
-  AbstractControl,
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
+  FormArray,
 } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
-import { Author } from '@app/models/author.model';
-import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
-import { AUTHOR_NAME_PATTERN } from '@shared/constants/patterns.constants';
 import { CoursesStoreService } from '@app/services/courses-store.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { ROUTES, TEXT, PATTERNS } from '@shared/constants';
+import { Author } from '@shared/types/courses.types';
 
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
 })
 export class CourseFormComponent implements OnInit, OnDestroy {
-  courseForm!: FormGroup;
-  allAuthors: Author[] = [];
-  submitted: boolean = false;
-  private subscription = new Subscription();
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly fb = inject(FormBuilder);
+  private readonly library = inject(FaIconLibrary);
+  private readonly coursesStore = inject(CoursesStoreService);
 
-  FIELDS = {
+  private subscription = new Subscription();
+  private allAuthors: Author[] = [];
+
+  courseForm!: FormGroup;
+  submitted = false;
+
+  readonly courseId: string | null = this.route.snapshot.paramMap.get('id');
+  readonly FIELDS = {
     TITLE: 'title',
     DESCRIPTION: 'description',
     DURATION: 'duration',
     AUTHORS: 'authors',
     NEW_AUTHOR: 'author',
   };
+  readonly TEXT = TEXT;
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
-  readonly FIELD_NAMES = FIELD_NAMES;
+  constructor() {
+    this.library.addIconPacks(fas);
+  }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    public library: FaIconLibrary,
-    private coursesStore: CoursesStoreService
-  ) {
-    library.addIconPacks(fas);
+  ngOnInit(): void {
+    this.courseForm = this.createForm();
 
-    this.courseForm = this.fb.group({
+    this.subscription.add(
+      this.coursesStore.authors$.subscribe((authors) => {
+        this.allAuthors = authors;
+      })
+    );
+
+    this.subscription.add(this.coursesStore.getAllAuthors().subscribe());
+
+    if (this.courseId) {
+      this.loadCourseData(this.courseId);
+    }
+  }
+
+  private createForm(): FormGroup {
+    return this.fb.group({
       [this.FIELDS.TITLE]: ['', [Validators.required, Validators.minLength(2)]],
       [this.FIELDS.DESCRIPTION]: [
         '',
@@ -56,34 +73,33 @@ export class CourseFormComponent implements OnInit, OnDestroy {
       [this.FIELDS.AUTHORS]: this.fb.array([], Validators.required),
       [this.FIELDS.NEW_AUTHOR]: [
         '',
-        [Validators.minLength(2), Validators.pattern(AUTHOR_NAME_PATTERN)],
+        [
+          Validators.minLength(2),
+          Validators.pattern(PATTERNS.AUTHOR_NAME_PATTERN),
+        ],
       ],
     });
   }
 
-  ngOnInit(): void {
+  private loadCourseData(courseId: string): void {
     this.subscription.add(
-      this.coursesStore.authors$.subscribe((authors) => {
-        this.allAuthors = authors;
+      this.coursesStore.getCourse(courseId).subscribe((course) => {
+        if (course?.id) {
+          this.courseForm.patchValue({
+            title: course.title,
+            description: course.description,
+            duration: course.duration,
+          });
+
+          const selectedAuthors = this.allAuthors.filter((a) =>
+            course.authors.includes(a.id)
+          );
+          selectedAuthors.forEach((author) =>
+            this.authors.push(new FormControl(author))
+          );
+        }
       })
     );
-    this.coursesStore.getAllAuthors().subscribe();
-  }
-
-  get titleCtrl(): AbstractControl<string> | null {
-    return this.courseForm.get(this.FIELDS.TITLE);
-  }
-
-  get descriptionCtrl(): AbstractControl<string> | null {
-    return this.courseForm.get(this.FIELDS.DESCRIPTION);
-  }
-
-  get durationCtrl(): AbstractControl<number> | null {
-    return this.courseForm.get(this.FIELDS.DURATION);
-  }
-
-  get durationValue(): number {
-    return this.durationCtrl?.value || 0;
   }
 
   get authors(): FormArray {
@@ -94,77 +110,63 @@ export class CourseFormComponent implements OnInit, OnDestroy {
     return this.authors.value as Author[];
   }
 
-  get authorCtrl(): AbstractControl<string> | null {
-    return this.courseForm.get(this.FIELDS.NEW_AUTHOR);
-  }
-
   get availableAuthors(): Author[] {
     return this.allAuthors.filter(
       (author) =>
-        !this.selectedAuthors.find((selected) => selected.id === author.id)
+        !this.selectedAuthors.some((selected) => selected.id === author.id)
     );
   }
 
   addExistingAuthor(author: Author): void {
-    const authorControl = new FormControl(author);
-    this.authors.push(authorControl);
+    this.authors.push(new FormControl(author));
   }
 
   removeAuthor(authorId: string): void {
-    const index = this.selectedAuthors.findIndex(
-      (author) => author.id === authorId
-    );
-    if (index >= 0) {
-      this.authors.removeAt(index);
-    }
+    const index = this.selectedAuthors.findIndex((a) => a.id === authorId);
+    if (index !== -1) this.authors.removeAt(index);
   }
 
   addNewAuthor(): void {
-    const authorControl = this.courseForm.get(this.FIELDS.NEW_AUTHOR);
-
-    if (!authorControl || authorControl.invalid) {
-      authorControl?.markAsTouched();
+    const control = this.courseForm.get(this.FIELDS.NEW_AUTHOR);
+    if (!control || control.invalid) {
+      control?.markAsTouched();
       return;
     }
 
-    const authorName = authorControl.value?.trim();
-    if (!authorName) return;
+    const name = control.value?.trim();
+    if (!name) return;
 
-    this.coursesStore.createAuthor(authorName).subscribe((response) => {
-      this.addExistingAuthor(response.result);
-    });
+    this.subscription.add(
+      this.coursesStore.createAuthor(name).subscribe((result) => {
+        this.addExistingAuthor(result);
+      })
+    );
 
-    authorControl.reset();
+    control.reset();
   }
 
   onSubmit(): void {
     this.submitted = true;
     this.courseForm.markAllAsTouched();
 
-    if (this.courseForm.invalid) {
-      return;
-    }
+    if (this.courseForm.invalid) return;
 
     const { author, authors, ...formData } = this.courseForm.value;
-
-    this.coursesStore
-      .createCourse({
-        ...formData,
-        authors: authors.map((author: Author) => author.id),
-      })
-      .subscribe((response) => {
-        if (response.successful) {
-          this.router.navigate(['/courses']);
-        }
-      });
-
-    console.log('Form submitted:', {
+    const payload = {
       ...formData,
-      authors: authors.map((author: Author) => author.id),
-    });
+      authors: authors.map((a: Author) => a.id),
+    };
 
-    this.authors.clear();
+    const request$ = this.courseId
+      ? this.coursesStore.editCourse(this.courseId, payload)
+      : this.coursesStore.createCourse(payload);
+
+    this.subscription.add(
+      request$.subscribe(() => this.router.navigate([ROUTES.COURSES]))
+    );
+
     this.courseForm.reset();
+    this.authors.clear();
     this.submitted = false;
   }
 

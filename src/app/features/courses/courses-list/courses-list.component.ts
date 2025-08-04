@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Author } from '@app/models/author.model';
-import { Course } from '@app/models/course.model';
+
+import { Author, Course } from '@shared/types/courses.types';
 
 @Component({
   selector: 'app-courses-list',

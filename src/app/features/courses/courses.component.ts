@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs';
 
 import { CoursesStoreService } from '@app/services/courses-store.service';
 import { UserStoreService } from '@app/user/services/user-store.service';
-import { Course } from '@app/models/course.model';
-import { Author } from '@app/models/author.model';
+
+import { Author, Course } from '@shared/types/courses.types';
 import { TEXT, ROUTES } from '@shared/constants';
 
 @Component({

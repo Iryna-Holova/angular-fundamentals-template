@@ -41,6 +41,7 @@ export class CourseFormComponent implements OnInit, OnDestroy {
     NEW_AUTHOR: 'author',
   };
   readonly TEXT = TEXT;
+  readonly ROUTES = ROUTES;
 
   constructor() {
     this.library.addIconPacks(fas);

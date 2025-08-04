@@ -1,7 +1,9 @@
 <ng-container *ngIf="courses?.length; else noCourses">
   <section class="py-[71px]">
     <div class="mb-8 flex flex-wrap justify-between gap-5">
-      <div class="w-full laptop:w-[564px]"><app-search></app-search></div>
+      <div class="w-full laptop:w-[564px]">
+        <app-search (search)="onSearchCourses($event)"></app-search>
+      </div>
       <app-button
         *ngIf="isAdmin"
         [routerLink]="'/' + ROUTES.COURSE_ADD"

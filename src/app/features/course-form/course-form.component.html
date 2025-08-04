@@ -181,13 +181,15 @@
     <!-- Buttons -->
     <div class="flex flex-wrap justify-end items-end gap-5">
       <app-button
-        routerLink="/courses"
+        [routerLink]="[ROUTES.COURSES]"
         [buttonText]="TEXT.BUTTON_TEXT.BACK"
         [width]="185"
         type="button"
       ></app-button>
       <app-button
-        [buttonText]="TEXT.BUTTON_TEXT.ADD_COURSE"
+        [buttonText]="
+          courseId ? TEXT.BUTTON_TEXT.SAVE_CHANGES : TEXT.BUTTON_TEXT.ADD_COURSE
+        "
         type="submit"
         [width]="185"
       ></app-button>

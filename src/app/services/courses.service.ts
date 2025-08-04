@@ -57,8 +57,8 @@ export class CoursesService {
       );
   }
 
-  filterCourses(title: string): Observable<Course[]> {
-    const params = new HttpParams().set('title', title);
+  filterCourses(value: string): Observable<Course[]> {
+    const params = new HttpParams().set('title', value);
     return this.http
       .get<ApiResponse<Course[]>>(
         `${this.apiUrl}${API.ENDPOINTS.COURSES_FILTER}`,

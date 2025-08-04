@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,18 +13,18 @@ import { TEXT, ROUTES } from '@shared/constants';
   templateUrl: './courses.component.html',
 })
 export class CoursesComponent implements OnInit, OnDestroy {
-  isAdmin = this.userStore.isAdmin;
-  courses: Course[] = [];
-  authors: Author[] = [];
+  private readonly router = inject(Router);
+  private readonly userStore = inject(UserStoreService);
+  private readonly coursesStore = inject(CoursesStoreService);
+
+  private readonly subscription = new Subscription();
+
+  readonly isAdmin = this.userStore.isAdmin;
   readonly TEXT = TEXT;
   readonly ROUTES = ROUTES;
-  private subscription = new Subscription();
 
-  constructor(
-    private router: Router,
-    private userStore: UserStoreService,
-    private coursesStore: CoursesStoreService
-  ) {}
+  courses: Course[] = [];
+  authors: Author[] = [];
 
   ngOnInit(): void {
     this.subscription.add(
@@ -37,20 +37,25 @@ export class CoursesComponent implements OnInit, OnDestroy {
         this.authors = authors;
       })
     );
-    this.coursesStore.getAll().subscribe();
-    this.coursesStore.getAllAuthors().subscribe();
+
+    this.subscription.add(this.coursesStore.getAll().subscribe());
+    this.subscription.add(this.coursesStore.getAllAuthors().subscribe());
+  }
+
+  onSearchCourses(query: string): void {
+    this.subscription.add(this.coursesStore.filterCourses(query).subscribe());
   }
 
   onShowCourse(id: string): void {
-    this.router.navigate([ROUTES.COURSE_INFO, id]);
+    this.router.navigate([this.ROUTES.COURSE_INFO, id]);
   }
 
   onEditCourse(id: string): void {
-    this.router.navigate([ROUTES.COURSE_EDIT, id]);
+    this.router.navigate([this.ROUTES.COURSE_EDIT, id]);
   }
 
   onDeleteCourse(id: string): void {
-    this.coursesStore.deleteCourse(id).subscribe();
+    this.subscription.add(this.coursesStore.deleteCourse(id).subscribe());
   }
 
   ngOnDestroy(): void {

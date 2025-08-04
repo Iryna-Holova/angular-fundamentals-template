@@ -4,6 +4,7 @@ export const BUTTON_TEXT = {
   LOGOUT: 'Logout',
   SEARCH: 'Search',
   ADD_COURSE: 'Add new course',
+  SAVE_CHANGES: 'Save changes',
   SHOW_COURSE: 'Show course',
   BACK: 'Back',
   CREATE_COURSE: 'Create course',

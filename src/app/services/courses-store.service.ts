@@ -92,9 +92,9 @@ export class CoursesStoreService {
     );
   }
 
-  filterCourses(title: string): Observable<any> {
+  filterCourses(value: string): Observable<any> {
     this.isLoading$$.next(true);
-    return this.coursesService.filterCourses(title).pipe(
+    return this.coursesService.filterCourses(value).pipe(
       tap((result) => {
         this.courses$$.next(result);
       }),

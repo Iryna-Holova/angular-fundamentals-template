@@ -1,33 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
+
 import { UserStoreService } from '@app/user/services/user-store.service';
 import { AuthService } from '@app/auth/services/auth.service';
-import { TEXT } from '@shared/constants';
+import { ROUTES, TEXT } from '@shared/constants';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-  title = 'courses-app';
+export class AppComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly userStore = inject(UserStoreService);
+  private readonly authService = inject(AuthService);
+
+  readonly title = 'courses-app';
   readonly TEXT = TEXT;
 
-  userName$ = this.userStore.name$;
-  isAuthorized$ = this.authService.isAuthorized$;
-
-  constructor(
-    private router: Router,
-    private userStore: UserStoreService,
-    private authService: AuthService
-  ) {}
+  readonly userName$ = this.userStore.currentUser.pipe(
+    map((user) => user?.name ?? '')
+  );
+  readonly isAuthorized$ = this.authService.isAuthorized;
 
   ngOnInit(): void {
-    this.userStore.getUser().subscribe();
+    if (this.authService.isUserAuthorized) {
+      this.userStore.loadCurrentUser().subscribe();
+    }
   }
 
   onLogout(): void {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      complete: () => {
+        this.userStore.clearUser();
+        this.router.navigate([ROUTES.LOGIN]);
+      },
     });
   }
 }

@@ -1,27 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface User {
-  email: string;
-  name: string;
-  role: string;
-}
-
-interface ApiResponse<T> {
-  successful: boolean;
-  result: T;
-}
+import { User, AuthResponse } from '@app/shared/types/auth.types';
+import { API } from '@app/shared/constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private readonly apiUrl = 'http://localhost:4000';
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = API.BASE_URL;
 
-  constructor(private http: HttpClient) {}
-
-  getUser(): Observable<ApiResponse<User>> {
-    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users/me`);
+  getCurrentUser(): Observable<AuthResponse<User>> {
+    return this.http.get<AuthResponse<User>>(
+      `${this.apiUrl}${API.ENDPOINTS.CURRENT}`
+    );
   }
 }

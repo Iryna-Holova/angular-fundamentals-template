@@ -62,7 +62,7 @@
     <p class="w-[286px] max-w-full">
       {{ TEXT.PAGE_TEXT.LOGIN.TEXT }}
       <a
-        routerLink="/registration"
+        [routerLink]="'/' + ROUTES.REGISTER"
         class="font-bold underline decoration-transparent hover:decoration-grey transition-colors cursor-pointer"
       >
         {{ TEXT.BUTTON_TEXT.REGISTER }}

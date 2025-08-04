@@ -1,94 +1,77 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, EMPTY } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+
 import { SessionStorageService } from './session-storage.service';
-import { UserStoreService } from '@app/user/services/user-store.service';
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  successful: boolean;
-  result: string;
-  user?: {
-    email: string;
-    name: string;
-    role: string;
-  };
-}
-
-interface RegisterResponse {
-  successful: boolean;
-  result?: string;
-  errors?: string[];
-}
+import {
+  LoginRequest,
+  RegisterRequest,
+  LoginResponse,
+  AuthResponse,
+} from '@app/shared/types/auth.types';
+import { API } from '@shared/constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:4000';
-  private isAuthorized$$ = new BehaviorSubject<boolean>(false);
-  public isAuthorized$: Observable<boolean> =
-    this.isAuthorized$$.asObservable();
+  private readonly http = inject(HttpClient);
+  private readonly sessionStorage = inject(SessionStorageService);
 
-  constructor(
-    private http: HttpClient,
-    private sessionStorage: SessionStorageService,
-    private userService: UserStoreService
-  ) {
-    const token = this.sessionStorage.getToken();
-    this.isAuthorised = !!token;
-  }
+  private readonly apiUrl = API.BASE_URL;
+  private readonly isAuthorized$ = new BehaviorSubject<boolean>(
+    this.sessionStorage.hasToken()
+  );
+
+  readonly isAuthorized = this.isAuthorized$.asObservable();
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}/login`, credentials)
+      .post<LoginResponse>(`${this.apiUrl}${API.ENDPOINTS.LOGIN}`, credentials)
       .pipe(
-        tap((response) => {
-          if (response.successful) {
-            this.sessionStorage.setToken(response.result);
-            this.userService.getUser().subscribe();
-            this.isAuthorised = true;
-          }
-        })
+        tap(this.handleLoginSuccess.bind(this)),
+        catchError(this.handleError.bind(this))
       );
   }
 
+  register(credentials: RegisterRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(
+        `${this.apiUrl}${API.ENDPOINTS.REGISTER}`,
+        credentials
+      )
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+
   logout(): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/logout`).pipe(
-      tap(() => {
-        this.sessionStorage.deleteToken();
-        this.isAuthorised = false;
+    return this.http.delete<void>(`${this.apiUrl}${API.ENDPOINTS.LOGOUT}`).pipe(
+      tap(this.handleLogoutSuccess.bind(this)),
+      catchError((error: HttpErrorResponse) => {
+        this.handleLogoutSuccess();
+        return EMPTY;
       })
     );
   }
 
-  register(credentials: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(
-      `${this.apiUrl}/register`,
-      credentials
-    );
+  get isUserAuthorized(): boolean {
+    return this.isAuthorized$.value;
   }
 
-  get isAuthorised(): boolean {
-    return this.isAuthorized$$.getValue();
+  private handleLoginSuccess(response: LoginResponse): void {
+    if (response.successful && response.result) {
+      this.sessionStorage.setToken(response.result);
+      this.isAuthorized$.next(true);
+    }
   }
 
-  set isAuthorised(value: boolean) {
-    this.isAuthorized$$.next(value);
+  private handleLogoutSuccess(): void {
+    this.sessionStorage.deleteToken();
+    this.isAuthorized$.next(false);
   }
 
-  getLoginUrl(): string {
-    return `${this.apiUrl}/login`;
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('Auth service error:', error);
+    return throwError(() => error);
   }
 }

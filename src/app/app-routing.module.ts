@@ -1,23 +1,25 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { AuthorizedGuard } from './auth/guards/authorized.guard';
 import { NotAuthorizedGuard } from './auth/guards/not-authorized.guard';
 import { AdminGuard } from './user/guards/admin.guard';
+import { ROUTES } from '@shared/constants';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/courses',
+    redirectTo: ROUTES.COURSES,
     pathMatch: 'full',
   },
   {
-    path: 'login',
+    path: ROUTES.LOGIN,
     canActivate: [NotAuthorizedGuard],
     loadChildren: () =>
       import('./features/login/login.module').then((m) => m.LoginModule),
   },
   {
-    path: 'registration',
+    path: ROUTES.REGISTER,
     canActivate: [NotAuthorizedGuard],
     loadChildren: () =>
       import('./features/registration/registration.module').then(
@@ -25,7 +27,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'courses/add',
+    path: ROUTES.COURSE_ADD,
     canLoad: [AuthorizedGuard],
     canActivate: [AdminGuard],
     loadChildren: () =>
@@ -34,7 +36,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'courses/edit/:id',
+    path: `${ROUTES.COURSE_EDIT}/:id`,
     canLoad: [AuthorizedGuard],
     canActivate: [AdminGuard],
     loadChildren: () =>
@@ -43,7 +45,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'courses/:id',
+    path: `${ROUTES.COURSE_INFO}/:id`,
     canLoad: [AuthorizedGuard],
     loadChildren: () =>
       import('./features/course-info/course-info.module').then(
@@ -51,14 +53,14 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'courses',
+    path: ROUTES.COURSES,
     canLoad: [AuthorizedGuard],
     loadChildren: () =>
       import('./features/courses/courses.module').then((m) => m.CoursesModule),
   },
   {
     path: '**',
-    redirectTo: '/courses',
+    redirectTo: ROUTES.COURSES,
   },
 ];
 

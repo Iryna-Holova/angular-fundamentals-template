@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
@@ -6,42 +6,41 @@ import {
   HttpEvent,
   HttpErrorResponse,
 } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { SessionStorageService } from '../services/session-storage.service';
-import { AuthService } from '../services/auth.service';
+
+import { SessionStorageService } from '@app/auth/services/session-storage.service';
+import { AuthService } from '@app/auth/services/auth.service';
+import { ROUTES } from '@shared/constants';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(
-    private sessionStorageService: SessionStorageService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private readonly sessionStorage = inject(SessionStorageService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = this.sessionStorageService.getToken();
+    const token = this.sessionStorage.getToken();
 
-    if (token) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: token,
-        },
+    const authReq = token
+      ? req.clone({ setHeaders: { Authorization: token } })
+      : req;
+
+    return next
+      .handle(authReq)
+      .pipe(catchError(this.handleHttpError.bind(this)));
+  }
+
+  private handleHttpError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401 || error.status === 403) {
+      this.authService.logout().subscribe({
+        complete: () => this.router.navigate([ROUTES.LOGIN]),
       });
     }
-
-    return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          this.authService.logout().subscribe();
-          this.router.navigate(['/login']);
-        }
-        return throwError(error);
-      })
-    );
+    return throwError(() => error);
   }
 }

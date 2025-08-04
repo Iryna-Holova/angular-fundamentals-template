@@ -5,18 +5,19 @@ import { Subscription } from 'rxjs';
 import { CoursesStoreService } from '@app/services/courses-store.service';
 import { UserStoreService } from '@app/user/services/user-store.service';
 import { Course } from '@app/models/course.model';
-import { TEXT } from '@shared/constants';
 import { Author } from '@app/models/author.model';
+import { TEXT, ROUTES } from '@shared/constants';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
 })
 export class CoursesComponent implements OnInit, OnDestroy {
-  isAdmin$ = this.userStore.isAdmin$;
+  isAdmin = this.userStore.isAdmin;
   courses: Course[] = [];
   authors: Author[] = [];
   readonly TEXT = TEXT;
+  readonly ROUTES = ROUTES;
   private subscription = new Subscription();
 
   constructor(
@@ -41,11 +42,11 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   onShowCourse(id: string): void {
-    this.router.navigate(['/courses', id]);
+    this.router.navigate([ROUTES.COURSE_INFO, id]);
   }
 
   onEditCourse(id: string): void {
-    this.router.navigate(['/courses', 'edit', id]);
+    this.router.navigate([ROUTES.COURSE_EDIT, id]);
   }
 
   onDeleteCourse(id: string): void {

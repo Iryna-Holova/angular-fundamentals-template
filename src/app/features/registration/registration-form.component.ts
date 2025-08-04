@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 
 import { AuthService } from '@app/auth/services/auth.service';
-import { TEXT } from '@shared/constants';
+import { ROUTES, TEXT } from '@shared/constants';
 
 @Component({
   selector: 'app-registration-form',
@@ -26,6 +26,7 @@ export class RegistrationFormComponent implements OnInit {
   };
 
   readonly TEXT = TEXT;
+  readonly ROUTES = ROUTES;
 
   constructor(
     private fb: FormBuilder,
@@ -59,19 +60,22 @@ export class RegistrationFormComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.registrationForm.valid) {
-      this.authService.register(this.registrationForm.value).subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          if (err.error?.errors) {
-            alert(err.error.errors.join('\n'));
-          } else {
-            alert('Unexpected error. Please try again later.');
-          }
-        },
-      });
-    }
+    if (!this.registrationForm.valid) return;
+
+    this.authService.register(this.registrationForm.value).subscribe({
+      next: () => {
+        this.router.navigate([ROUTES.LOGIN]);
+      },
+      error: (error) => {
+        const errors = error.error?.errors || [
+          'Unexpected error. Please try again later.',
+        ];
+        this.showErrors(errors);
+      },
+    });
+  }
+
+  private showErrors(errors: string[]): void {
+    alert(errors.join('\n'));
   }
 }

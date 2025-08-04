@@ -41,6 +41,16 @@ module.exports = {
     transitionDuration: {
       DEFAULT: '250ms',
     },
+
+    keyframes: {
+      fadeIn: {
+        '0%': { opacity: 0 },
+        '100%': { opacity: 1 },
+      },
+    },
+    animation: {
+      'fade-in': 'fadeIn 300ms ease-in-out',
+    },
   },
   plugins: [],
 };

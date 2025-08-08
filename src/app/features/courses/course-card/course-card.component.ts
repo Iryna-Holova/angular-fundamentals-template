@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Course } from '@app/models/course.model';
-import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
+
+import { Author, Course } from '@shared/types/courses.types';
+import { TEXT } from '@shared/constants';
 
 @Component({
   selector: 'app-course-card',
@@ -8,12 +9,12 @@ import { BUTTON_TEXT, FIELD_NAMES } from '@shared/constants/text.constants';
 })
 export class CourseCardComponent {
   @Input() course!: Course;
+  @Input() authors!: Author[];
   @Input() editable = false;
 
   @Output() clickOnShow = new EventEmitter<void>();
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
-  readonly FIELD_NAMES = FIELD_NAMES;
+  readonly TEXT = TEXT;
 
   onShow(): void {
     this.clickOnShow.emit();

@@ -1,25 +1,37 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SharedModule } from '@shared/shared.module';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from '@app/app.component';
-import { CourseInfoComponent } from '@features/course-info/course-info.component';
-import { CoursesModule } from '@app/features/courses/courses.module';
-import { NotAuthorizedGuard } from '@app/auth/guards/not-authorized.guard';
-import { AuthorizedGuard } from '@app/auth/guards/authorized.guard';
-import { CoursesStoreService } from '@app/services/courses-store.service';
+import { SharedModule } from '@shared/shared.module';
+
+import { SessionStorageService } from './auth/services/session-storage.service';
+import { AuthService } from './auth/services/auth.service';
 import { CoursesService } from '@app/services/courses.service';
-import { DurationPipe } from '@shared/pipes/duration.pipe';
+import { CoursesStoreService } from '@app/services/courses-store.service';
+import { UserService } from './user/services/user.service';
+import { UserStoreService } from './user/services/user-store.service';
+
+import { AuthorizedGuard } from '@app/auth/guards/authorized.guard';
+import { NotAuthorizedGuard } from '@app/auth/guards/not-authorized.guard';
+import { AdminGuard } from './user/guards/admin.guard';
+import { TokenInterceptor } from './auth/interceptors/token.interceptor';
 
 @NgModule({
-  declarations: [AppComponent, CourseInfoComponent],
-  imports: [BrowserModule, SharedModule, CoursesModule, FontAwesomeModule],
+  declarations: [AppComponent],
+  imports: [BrowserModule, HttpClientModule, AppRoutingModule, SharedModule],
   providers: [
-    AuthorizedGuard,
-    NotAuthorizedGuard,
+    SessionStorageService,
+    AuthService,
     CoursesService,
     CoursesStoreService,
-    DurationPipe,
+    UserService,
+    UserStoreService,
+    AuthorizedGuard,
+    NotAuthorizedGuard,
+    AdminGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

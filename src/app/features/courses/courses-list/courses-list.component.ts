@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Course } from '@app/models/course.model';
+
+import { Author, Course } from '@shared/types/courses.types';
 
 @Component({
   selector: 'app-courses-list',
@@ -7,6 +8,7 @@ import { Course } from '@app/models/course.model';
 })
 export class CoursesListComponent {
   @Input() courses: Course[] = [];
+  @Input() authors: Author[] = [];
   @Input() editable = false;
 
   @Output() showCourse = new EventEmitter<string>();

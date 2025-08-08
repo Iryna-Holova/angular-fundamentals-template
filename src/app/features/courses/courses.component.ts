@@ -1,26 +1,64 @@
-import { Component } from '@angular/core';
-import { Course } from '@app/models/course.model';
-import { mockedCoursesList } from '@shared/mocks/mock';
-import { BUTTON_TEXT } from '@shared/constants/text.constants';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { CoursesStoreService } from '@app/services/courses-store.service';
+import { UserStoreService } from '@app/user/services/user-store.service';
+
+import { Author, Course } from '@shared/types/courses.types';
+import { TEXT, ROUTES } from '@shared/constants';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
 })
-export class CoursesComponent {
-  courses: Course[] = mockedCoursesList;
+export class CoursesComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly userStore = inject(UserStoreService);
+  private readonly coursesStore = inject(CoursesStoreService);
 
-  readonly BUTTON_TEXT = BUTTON_TEXT;
+  private readonly subscription = new Subscription();
+
+  readonly isAdmin = this.userStore.isAdmin;
+  readonly TEXT = TEXT;
+  readonly ROUTES = ROUTES;
+
+  courses: Course[] = [];
+  authors: Author[] = [];
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.coursesStore.courses$.subscribe((courses) => {
+        this.courses = courses;
+      })
+    );
+    this.subscription.add(
+      this.coursesStore.authors$.subscribe((authors) => {
+        this.authors = authors;
+      })
+    );
+
+    this.subscription.add(this.coursesStore.getAll().subscribe());
+    this.subscription.add(this.coursesStore.getAllAuthors().subscribe());
+  }
+
+  onSearchCourses(query: string): void {
+    this.subscription.add(this.coursesStore.filterCourses(query).subscribe());
+  }
 
   onShowCourse(id: string): void {
-    console.log('Show course', id); // TODO
+    this.router.navigate([this.ROUTES.COURSE_INFO, id]);
   }
 
   onEditCourse(id: string): void {
-    console.log('Edit course', id); // TODO
+    this.router.navigate([this.ROUTES.COURSE_EDIT, id]);
   }
 
   onDeleteCourse(id: string): void {
-    console.log('Delete course', id); // TODO
+    this.subscription.add(this.coursesStore.deleteCourse(id).subscribe());
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

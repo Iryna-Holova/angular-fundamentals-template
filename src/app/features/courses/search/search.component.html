@@ -1,0 +1,16 @@
+<form
+  (ngSubmit)="onSearch()"
+  class="flex flex-col items-end tablet:flex-row gap-4"
+>
+  <input
+    type="text"
+    [(ngModel)]="searchValue"
+    name="search"
+    [placeholder]="placeholder"
+  />
+  <app-button
+    type="submit"
+    [buttonText]="BUTTON_TEXT.SEARCH"
+    [width]="148"
+  ></app-button>
+</form>

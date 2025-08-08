@@ -17,10 +17,20 @@ import { AuthorizedGuard } from '@app/auth/guards/authorized.guard';
 import { NotAuthorizedGuard } from '@app/auth/guards/not-authorized.guard';
 import { AdminGuard } from './user/guards/admin.guard';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { effects, reducers } from './store';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule, SharedModule],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    SharedModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
+  ],
   providers: [
     SessionStorageService,
     AuthService,

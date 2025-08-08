@@ -1,4 +1,4 @@
-<ng-container *ngIf="courses?.length; else noCourses">
+<ng-container *ngIf="courses$ | async as courses; else noCourses">
   <section class="py-[71px]">
     <div class="mb-8 flex flex-wrap justify-between gap-5">
       <div class="w-full laptop:w-[564px]">
